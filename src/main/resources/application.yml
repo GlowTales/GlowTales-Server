@@ -10,7 +10,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${{ secrets.DB_URL }}
+    url: jdbc:mysql://13.209.226.209:3306/glowTales?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     #url: jdbc:mysql://localhost:3306/glowTales?serverTimezone=Asia/Seoul
     username: glow
     password: glow1234
