@@ -2,10 +2,12 @@ package com.example.glowtales.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -21,6 +23,7 @@ public class Member {
     private String provider_cd;
     private Integer learning_level;
     private String email;
+    private String roles; //USER, ADMIN
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LearningLanguage> learning_language_list = new ArrayList<>();
@@ -28,8 +31,21 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tale> tale_list = new ArrayList<>();
 
+    public List<String> getRoleList() {
+        if(!this.roles.isEmpty()) {
+            return Arrays.asList(this.roles.split(","));
+        }
+        return new ArrayList<>();
+    }
 
-
-
-
+    @Builder
+    public Member(String name, Integer age, String provider, String provider_cd, Integer learning_level, String email, String roles) {
+        this.name = name;
+        this.age = age;
+        this.provider = provider;
+        this.provider_cd = provider_cd;
+        this.learning_level = learning_level;
+        this.email = email;
+        this.roles = roles;
+    }
 }
