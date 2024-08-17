@@ -38,8 +38,14 @@ dependencies {
 
     implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
+
+    //스웨거
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+jar {
+    enabled = false
 }

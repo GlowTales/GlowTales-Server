@@ -1,5 +1,6 @@
 package com.example.glowtales.domain;
 
+import com.example.glowtales.converter.YesOrNoConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,6 +25,6 @@ public class Choice {
     //TODO 변수명 변경 필요
     private String sunji;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = YesOrNoConverter.class)
     private YesOrNo is_correct;
 }
