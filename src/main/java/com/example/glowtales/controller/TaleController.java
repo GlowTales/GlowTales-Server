@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/tale")
 @Tag(name = "Tale API", description = "API for managing tales")
 public class TaleController {
 
@@ -39,29 +39,31 @@ public class TaleController {
 
     private final TaleService tale_service;
 
+
+
     @Operation(summary = "#004 완료하지 않은 동화 미리보기 불러오기", description = "학습을 완료하지 않은 동화 중 최신 동화를 3개 불러오는 API입니다.")
-    @GetMapping("/member/{memberId}/1")
+    @GetMapping("/unlearned/{memberId}")
     public ResponseEntity<List<TaleResponseDto>> getUnlearnedTalesTop3ByMemberId(@PathVariable Long memberId) {
         List<TaleResponseDto> posts = tale_service.getUnlearnedTaleTop3ByMemberId(memberId);
         return ResponseEntity.ok(posts);
     }
 
     @Operation(summary = "#005 완료하지 않은 동화 모두 불러오기", description = "학습을 완료하지 않은 동화를 최신순으로 불러오는 API입니다.")
-    @GetMapping("/member/{memberId}/2")
+    @GetMapping("/unlearned/top3/{memberId}")
     public ResponseEntity<List<TaleResponseDto>> getUnlearnedTalesByMemberId(@PathVariable Long memberId) {
         List<TaleResponseDto> posts = tale_service.getUnlearnedTaleByMemberId(memberId);
         return ResponseEntity.ok(posts);
     }
 
     @Operation(summary = "#006 최근 학습한 동화 미리보기 불러오기", description = "최근 학습한 동화 중 최신 동화를 3개 불러오는 API입니다.")
-    @GetMapping("/member/{memberId}/3")
+    @GetMapping("/studied/{memberId}")
     public ResponseEntity<List<TaleResponseDto>> getStudiedTalesTop3ByMemberId(@PathVariable Long memberId) {
         List<TaleResponseDto> posts = tale_service.getStudiedTaleTop3ByMemberId(memberId);
         return ResponseEntity.ok(posts);
     }
 
     @Operation(summary = "#007 최근 학습한 동화 모두 불러오기", description = "최근 학습한 동화를 최신순으로 불러오는 API입니다.")
-    @GetMapping("/member/{memberId}/4")
+    @GetMapping("/studied/top3/{memberId}")
     public ResponseEntity<List<TaleResponseDto>> getStudiedTalesByMemberId(@PathVariable Long memberId) {
         List<TaleResponseDto> posts = tale_service.getStudiedTaleByMemberId(memberId);
         return ResponseEntity.ok(posts);

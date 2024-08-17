@@ -31,4 +31,6 @@ public class LanguageTale {
     @Convert(converter = YesOrNoConverter.class)
     private YesOrNo is_learned;
 
+    private Integer count;
+
 }
