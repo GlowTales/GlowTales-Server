@@ -1,5 +1,4 @@
 name: Build and Deploy to EC2
-
 # 워크플로우가 언제 실행될 것인지 조건 명시
 on:
   push:
@@ -39,8 +38,10 @@ jobs:
           touch ./application-common.yml
           touch ./application-prod.yml
           echo "${{ secrets.APPLICATION }}" > ./application.yml
-          echo "${{ secrets.COMMON }}" > ./application-common.yml
-          echo "${{ secrets.PROD }}" > ./application-prod.yml
+          echo "${{ secrets.APPLICATION }}" > ./application-common.yml
+          echo "${{ secrets.APPLICATION }}" > ./application-prod.yml
+#          echo "${{ secrets.COMMON }}" > ./application-common.yml
+#          echo "${{ secrets.PROD }}" > ./application-prod.yml
 
       # 권한 부여
       - name: Grant execute permission for gradlew
@@ -59,7 +60,7 @@ jobs:
       - name: AWS credential 설정
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
           aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.CICD_SECRET_KEY }}
 

@@ -1,5 +1,6 @@
 package com.example.glowtales.domain;
 
+import com.example.glowtales.converter.YesOrNoConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class LanguageTale {
 
     private String title;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = YesOrNoConverter.class)
     private YesOrNo is_learned;
 
 }
