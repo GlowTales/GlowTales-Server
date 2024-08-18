@@ -1,38 +1,24 @@
 package com.example.glowtales.domain;
 
-import com.example.glowtales.converter.YesOrNoConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Clob;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LanguageTale {
 
+public class TaleWord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "language_id")
-    private Language language;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tale_id")
     private Tale tale;
 
-    @Lob
-    private Clob story;
-
-    private String title;
-
-    @Convert(converter = YesOrNoConverter.class)
-    private YesOrNo is_learned;
-
-    private Integer count;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "word_id")
+    private Word word;
 }
