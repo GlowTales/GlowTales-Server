@@ -22,9 +22,7 @@ public class MemberController {
     @GetMapping("/oauth/kakao/login")
     public ResponseEntity<LoginResponse> kakaoLogin(@RequestParam String code, HttpServletRequest request){
         try{
-            // 현재 도메인 확인
-            String currentDomain = request.getServerName();
-            return ResponseEntity.ok(kakaoService.kakaoLogin(code, currentDomain));
+            return ResponseEntity.ok(kakaoService.kakaoLogin(code, request.getServerName()));
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Item Not Found");
         }
