@@ -34,10 +34,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/member/admin/**").hasRole("ADMIN") // /admin/** 경로는 ROLE_ADMIN 권한을 가진 사용자만 접근 가능
                         .anyRequest().permitAll() // 그 외의 모든 요청은 인증 없이 접근 가능
                 )
-                .oauth2Login(oauth2Login -> {
-                    oauth2Login.loginPage("/loginForm");
-                    oauth2Login.userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(principalOauth2UserService));
-                })
+//                .oauth2Login(oauth2Login -> {
+//                    oauth2Login.loginPage("/loginForm");
+//                    oauth2Login.userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(principalOauth2UserService));
+//                })
         ;
         return http.build();
     }
