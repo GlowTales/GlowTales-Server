@@ -33,12 +33,9 @@ public class KakaoService {
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    private String redirectUri;
-
     public LoginResponse kakaoLogin(String code, String currentDomain) {
         //0. 동적으로 redirect URI 선택
-        String redirectUri = this.redirectUri;
+        String redirectUri = getRedirectUri(currentDomain);
 
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code, redirectUri);
@@ -47,10 +44,17 @@ public class KakaoService {
         HashMap<String, Object> userInfo= getKakaoUserInfo(accessToken);
 
         //3. 카카오ID로 회원가입 & 로그인 처리
-        LoginResponse kakaoUserResponse = kakaoUserLogin(userInfo);
-
-        return kakaoUserResponse;
+        return kakaoUserLogin(userInfo);
     }
+
+    private String getRedirectUri(String domain) {
+        if (domain.contains("localhost")) {
+            return "http://localhost:5173/kakao";
+        } else {
+            return "https://glowtales.netlify.app/kakao";
+        }
+    }
+
 
     // 1. 인가코드로 액세스 토큰 요청
     private String getAccessToken(String code, String redirectUri) {
@@ -130,23 +134,29 @@ public class KakaoService {
     //3. 카카오ID로 회원가입 & 로그인 처리
     private LoginResponse kakaoUserLogin(HashMap<String, Object> userInfo){
 
-        Long uid = Long.valueOf(userInfo.get("id").toString());
+        String uid = userInfo.get("id").toString();
         String kakaoEmail = userInfo.get("email").toString();
         String nickName = userInfo.get("nickname").toString();
+        String provider = "kakao";
 
-        Member kakaoUser = memberRepository.findByEmail(kakaoEmail);
+
+        Member kakaoUser = memberRepository.findByLoginId(provider + "_" + uid);
 
         if (kakaoUser == null) {
             kakaoUser = Member.builder()
                     .name(nickName)
                     .email(kakaoEmail)
-                    .provider("kakao")
+                    .provider(provider)
+                    .providerId(uid)
+                    .loginId(provider + "_" + uid)
+                    .roles("USER")
                     .build();
 
             memberRepository.save(kakaoUser);
         }
+
         //토큰 생성
-        AuthTokens token = authTokensGenerator.generate(uid.toString());
-        return new LoginResponse(uid,nickName,kakaoEmail,token);
+        AuthTokens token = authTokensGenerator.generate(uid);
+        return new LoginResponse(nickName,kakaoEmail,token);
     }
 }
