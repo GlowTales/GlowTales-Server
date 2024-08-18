@@ -20,7 +20,8 @@ public class Member {
     private String name;
     private Integer age;
     private String provider;
-    private String provider_cd;
+    private String providerId;
+    private String loginId;
     private Integer learning_level;
     private String email;
     private String roles; //USER, ADMIN
@@ -39,11 +40,12 @@ public class Member {
     }
 
     @Builder
-    public Member(String name, Integer age, String provider, String provider_cd, Integer learning_level, String email, String roles) {
+    public Member(String name, Integer age, String provider, String providerId, String loginId, Integer learning_level, String email, String roles) {
         this.name = name;
         this.age = age;
         this.provider = provider;
-        this.provider_cd = provider_cd;
+        this.providerId = providerId;
+        this.loginId = loginId;
         this.learning_level = learning_level;
         this.email = email;
         this.roles = roles;
