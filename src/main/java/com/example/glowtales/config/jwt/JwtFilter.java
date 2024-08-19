@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,7 +20,7 @@ import java.util.List;
 public class JwtFilter extends HttpFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private static final List<String> EXCLUDE_URLS = List.of("/api/v1/members/oauth/kakao/login", "/swagger-ui/index.html");
+    private static final List<String> EXCLUDE_URLS = List.of("/api/v1/members/oauth/kakao/login", "/swagger-ui/index.html", "/api/v1/members/token");
 
 
     @Override
@@ -45,6 +47,12 @@ public class JwtFilter extends HttpFilter {
 
             if (jwtTokenProvider.validateToken(token)) {
                 // 유효한 토큰인 경우 요청을 계속 진행
+                // 유효한 토큰인 경우 SecurityContextHolder에 인증 정보 설정
+                UsernamePasswordAuthenticationToken authentication = jwtTokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                authentication.getAuthorities().forEach(authority -> System.out.println(authority.getAuthority()));
+
                 chain.doFilter(request, response);
                 return;
             }

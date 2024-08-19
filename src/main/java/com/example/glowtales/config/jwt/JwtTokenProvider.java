@@ -1,11 +1,15 @@
 package com.example.glowtales.config.jwt;
 
+import com.example.glowtales.config.auth.PrincipalDetails;
+import com.example.glowtales.config.auth.PrincipalDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -15,10 +19,20 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
     private final Key key;
+    private final PrincipalDetailsService principalDetailsService;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, PrincipalDetailsService principalDetailsService) {
+        this.principalDetailsService = principalDetailsService;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public UsernamePasswordAuthenticationToken getAuthentication(String token) {
+        String loginId = getLoginIdFromAccessToken(token);
+        PrincipalDetails principalDetails = (PrincipalDetails) principalDetailsService.loadUserByUsername(loginId);
+
+        // 만약 권한이 한 가지로 고정이라면, 예를 들어 ROLE_USER
+        return new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
     }
 
     public String accessTokenGenerate(String subject, Date expiredAt) {
@@ -40,7 +54,7 @@ public class JwtTokenProvider {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody().getSubject();
     }
 
