@@ -29,6 +29,7 @@ public class KakaoService {
 
     private final MemberRepository memberRepository;
     private final AuthTokensGenerator authTokensGenerator;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
@@ -36,7 +37,8 @@ public class KakaoService {
     public LoginResponse kakaoLogin(String code, String currentDomain) {
         //0. 동적으로 redirect URI 선택
         String redirectUri = getRedirectUri(currentDomain);
-
+        System.out.println("redirect-uri: " + redirectUri);
+        logger.info("redirect-uri" + redirectUri);
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code, redirectUri);
 
