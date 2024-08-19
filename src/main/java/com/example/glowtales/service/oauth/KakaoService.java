@@ -37,8 +37,7 @@ public class KakaoService {
     public LoginResponse kakaoLogin(String code, String currentDomain) {
         //0. 동적으로 redirect URI 선택
         String redirectUri = getRedirectUri(currentDomain);
-        System.out.println("redirect-uri: " + redirectUri);
-        logger.info("redirect-uri" + redirectUri);
+        logger.info("redirect-uri: " + redirectUri);
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code, redirectUri);
 
@@ -50,7 +49,7 @@ public class KakaoService {
     }
 
     private String getRedirectUri(String domain) {
-        if (domain.contains("localhost")) {
+        if (domain.contains("localhost") || domain.contains("127.0.0.1")) {
             return "http://localhost:5173/kakao";
         } else {
             return "https://glowtales.netlify.app/kakao";
