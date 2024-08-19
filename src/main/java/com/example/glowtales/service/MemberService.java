@@ -1,19 +1,55 @@
 package com.example.glowtales.service;
 
 import com.example.glowtales.config.jwt.JwtTokenProvider;
+import com.example.glowtales.domain.LearningLanguage;
 import com.example.glowtales.domain.Member;
+import com.example.glowtales.dto.request.MemberForm;
+import com.example.glowtales.repository.LauguageRepository;
+import com.example.glowtales.repository.LearningLanguageRepository;
 import com.example.glowtales.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final LauguageRepository lauguageRepository;
+    private final LearningLanguageRepository learningLanguageRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     public Member findMemberByAccessToken(String accessToken) {
-        return memberRepository.findByLoginId(jwtTokenProvider.getLoginIdFromAccessToken(accessToken));
+        return memberRepository.findByLoginId(jwtTokenProvider.getLoginIdFromAccessToken(accessToken.substring(7)));
+    }
+
+    @Transactional
+    public void updateLearningLanguageAndLearningLevelAndAge(MemberForm memberForm, String accessToken) {
+        Member member = findMemberByAccessToken(accessToken);
+
+        if (member == null) {
+            throw new EntityNotFoundException("member not found");
+        }
+
+        // member 추가 정보 저장
+        member.updateAge(memberForm.getAge());
+
+        // learningLanguage 저장
+       learningLanguageRepository.save(
+               LearningLanguage.builder()
+                .language(lauguageRepository.findById(memberForm.getLanguageId()).orElseThrow(() -> new NoSuchElementException("일치하는 언어가 존재하지 않습니다.")))
+                .member(member)
+                .learningLevel(memberForm.getLearningLevel())
+                .build()
+       );
+    }
+
+    public String getAccessToken() {
+        return jwtTokenProvider.accessTokenGenerate("1", new Date((new Date()).getTime() + 1000 * 60 * 60));
     }
 }

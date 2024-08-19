@@ -160,7 +160,7 @@ public class KakaoService {
     }
 
     private Boolean validateIsActive(Member member) {
-        if (member.getAge() == null || member.getLearningLevel() == null) {
+        if (member.getAge() == null) {
             return false;
         }
         return true;
