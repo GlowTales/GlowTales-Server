@@ -31,7 +31,7 @@ public class LanguageTale {
     private String title;
 
     @Convert(converter = YesOrNoConverter.class)
-    private YesOrNo is_learned;
+    private YesOrNo isLearned;
 
     private Integer count;
 

@@ -19,7 +19,7 @@ public class Quiz {
     private Integer cd;
 
     @Enumerated(EnumType.STRING)
-    private YesOrNo is_learned;
+    private YesOrNo isLearned;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tale_id")
@@ -29,7 +29,7 @@ public class Quiz {
     private Answer answer;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Choice> choice_list = new ArrayList<>();
+    private List<Choice> choiceList = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Arrangement> arrangementList = new ArrayList<>();

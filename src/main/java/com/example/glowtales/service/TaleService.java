@@ -2,8 +2,10 @@ package com.example.glowtales.service;
 
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.domain.Tale;
+import com.example.glowtales.dto.request.TranslationRequest;
 import com.example.glowtales.dto.response.HomeInfoResponseDto;
 import com.example.glowtales.dto.response.TaleResponseDto;
+import com.example.glowtales.dto.response.TranslationResponse;
 import com.example.glowtales.dto.response.WordResponseDto;
 import com.example.glowtales.repository.MemberRepository;
 import com.example.glowtales.repository.TaleRepository;
@@ -11,6 +13,8 @@ import com.example.glowtales.repository.WordRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -32,6 +36,8 @@ public class TaleService {
 
     private final WordRepository wordRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(TaleService.class);
+
     @Autowired
     public TaleService(TaleRepository taleRepository, MemberRepository memberRepository,WordRepository wordRepository) {
         this.taleRepository = taleRepository;
@@ -52,9 +58,9 @@ public class TaleService {
         List<Tale> tales = taleRepository.findByMemberId(memberId);
 
         Stream<Tale> taleStream = tales.stream()
-                .filter(tale -> tale.getLanguage_tale_list().stream()
-                        .anyMatch(languageTale -> languageTale.getLanguage().getId() == 1 && languageTale.getIs_learned().getValue() == 2))
-                .sorted(Comparator.comparing(Tale::getStudied_at).reversed());
+                .filter(tale -> tale.getLanguageTaleList().stream()
+                        .anyMatch(languageTale -> languageTale.getLanguage().getId() == 1 && languageTale.getIsLearned().getValue() == 2))
+                .sorted(Comparator.comparing(Tale::getStudiedAt).reversed());
 
         if (count > 0) {
             taleStream = taleStream.limit(count);
@@ -71,9 +77,9 @@ public class TaleService {
         List<Tale> tales = taleRepository.findByMemberId(memberId);
 
         Stream<Tale> taleStream = tales.stream()
-                .filter(tale -> tale.getLanguage_tale_list().stream()
-                        .anyMatch(languageTale -> languageTale.getLanguage().getId() == 1 && languageTale.getIs_learned().getValue() == 1))
-                .sorted(Comparator.comparing(Tale::getStudied_at).reversed());
+                .filter(tale -> tale.getLanguageTaleList().stream()
+                        .anyMatch(languageTale -> languageTale.getLanguage().getId() == 1 && languageTale.getIsLearned().getValue() == 1))
+                .sorted(Comparator.comparing(Tale::getStudiedAt).reversed());
 
         if (count > 0) {
             taleStream = taleStream.limit(count);
@@ -89,9 +95,9 @@ public class TaleService {
         List<Tale> tales = taleRepository.findByMemberId(memberId);
         Stream<WordResponseDto> wordStream = tales.stream()
                 .flatMap(tale ->
-                        tale.getTale_word_list().stream()
+                        tale.getTaleWordList().stream()
                                 .map(tw -> tw.getWord()) // Word 객체를 스트림으로 변환
-                                .filter(word -> word != null && word.getOrigin_word() != null)
+                                .filter(word -> word != null && word.getOriginWord() != null)
                                 .map(WordResponseDto::new)
                 );
 
@@ -105,11 +111,18 @@ public class TaleService {
     //#010 사진에서 키워드 추출하기
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Value("${api.open-api-url}")
+    @Value("${api.etri.open-api-url}")
     private String openApiUrl;
 
-    @Value("${api.access-key}")
+    @Value("${api.etri.access-key}")
     private String accessKey;
+
+    @Value("${api.deepL.open-api-url}")
+    private  String deeplApiUrl;
+
+    @Value("${api.deepL.access-key}")
+    private  String authKey;
+
     public String getKeyword(MultipartFile file) throws IOException {
         byte[] fileBytes = file.getBytes();
         String base64File = Base64.getEncoder().encodeToString(fileBytes);
@@ -140,31 +153,57 @@ public class TaleService {
         );
 
 
-        return filterResponse(responseEntity.getBody());
+        return filterAndTranslateResponse(responseEntity.getBody());
     }
-    private String filterResponse(String responseBody) {
+
+    private String filterAndTranslateResponse(String responseBody) {
         try {
             JsonNode rootNode = objectMapper.readTree(responseBody);
 
             List<Map<String, Object>> filteredData = new ArrayList<>();
 
-            // confidence가 0.8 이상인 항목만 필터링
+            // confidence가 0.8 이상인 항목만 필터링 및 번역
             for (JsonNode item : rootNode.path("return_object").path("data")) {
                 double confidence = item.path("confidence").asDouble();
                 if (confidence >= 0.8) {
+                    String keyword = item.path("class").asText();
+                    String translatedKeyword = translateKeyword(keyword, "KO"); // 원하는 언어로 번역
                     filteredData.add(Map.of(
-                            "keyword", item.path("class").asText(),
+                            "keyword", translatedKeyword,
                             "confidence", confidence
                     ));
                 }
             }
 
-            // 필터링된 결과를 JSON 문자열로 변환 및 반환
             return objectMapper.writeValueAsString(Map.of("result", filteredData));
 
         } catch (Exception e) {
             e.printStackTrace();
             return "{\"error\":\"Error processing response\"}";
+        }
+    }
+
+    public String translateKeyword(String keyword, String targetLang) {
+        TranslationRequest request = new TranslationRequest(Collections.singletonList(keyword), targetLang);
+
+//        logger.info(request.toString());
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", "DeepL-Auth-Key " + authKey);
+
+        HttpEntity<TranslationRequest> entity = new HttpEntity<>(request, headers);
+        ResponseEntity<TranslationResponse> response = restTemplate.postForEntity(deeplApiUrl, entity, TranslationResponse.class);
+
+//        logger.info(response.getBody().getTranslations().get(0).getText());
+
+
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            return response.getBody().getTranslations().get(0).getText();
+        } else {
+            throw new RuntimeException("번역 실패. 상태 코드: " + response.getStatusCode());
         }
     }
 }

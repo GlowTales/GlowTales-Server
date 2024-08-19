@@ -15,6 +15,6 @@ public class WordResponseDto {
     @Builder
     public WordResponseDto(Word word) {
         this.word = word.getMark();
-        this.origin_word = word.getOrigin_word().getMark();
+        this.origin_word = word.getOriginWord().getMark();
     }
 }

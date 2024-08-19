@@ -13,26 +13,26 @@ import java.util.stream.Collectors;
 public class HomeInfoResponseDto {
 
 
-    private int created_tale_count;
-    private Long studied_tale_count;
-    private int study_count;
-    private List<String> learning_language_list;
+    private int createdTaleCount;
+    private Long studiedTaleCount;
+    private int studyCount;
+    private List<String> learningLanguageList;
 
     @Builder
     public HomeInfoResponseDto(Member member) {
-        this.created_tale_count = (member.getTale_list() != null) ? member.getTale_list().size() : 0;
-        this.studied_tale_count = member.getTale_list().stream()
-                .flatMap(tale -> tale.getLanguage_tale_list().stream())
-                .filter(languageTale -> languageTale.getIs_learned().getValue() == 1)
+        this.createdTaleCount = (member.getTaleList() != null) ? member.getTaleList().size() : 0;
+        this.studiedTaleCount = member.getTaleList().stream()
+                .flatMap(tale -> tale.getLanguageTaleList().stream())
+                .filter(languageTale -> languageTale.getIsLearned().getValue() == 1)
                 .count(); //
-        this.study_count= member.getTale_list().stream()
-                .flatMap(tale -> tale.getLanguage_tale_list().stream())
+        this.studyCount= member.getTaleList().stream()
+                .flatMap(tale -> tale.getLanguageTaleList().stream())
                 .mapToInt(LanguageTale::getCount)
                 .sum();
 
-        this.learning_language_list=member.getLearning_language_list().stream()
+        this.learningLanguageList=member.getLearningLanguageList().stream()
                 .map(LearningLanguage::getLanguage)
-                .map(Language::getLanguage_name)
+                .map(Language::getLanguageName)
                 .collect(Collectors.toList());
 
     }
