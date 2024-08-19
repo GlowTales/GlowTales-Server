@@ -139,9 +139,9 @@ public class KakaoService {
         String kakaoEmail = userInfo.get("email").toString();
         String nickName = userInfo.get("nickname").toString();
         String provider = "kakao";
+        String loginId = provider + "_" + uid;
 
-
-        Member kakaoUser = memberRepository.findByLoginId(provider + "_" + uid);
+        Member kakaoUser = memberRepository.findByLoginId(loginId);
 
         if (kakaoUser == null) {
             kakaoUser = Member.builder()
@@ -149,15 +149,16 @@ public class KakaoService {
                     .email(kakaoEmail)
                     .provider(provider)
                     .providerId(uid)
-                    .loginId(provider + "_" + uid)
+                    .loginId(loginId)
                     .roles("USER")
                     .build();
 
             memberRepository.save(kakaoUser);
         }
 
+
         //토큰 생성
-        AuthTokens token = authTokensGenerator.generate(uid);
+        AuthTokens token = authTokensGenerator.generate(loginId);
         return new LoginResponse(nickName,kakaoEmail,token);
     }
 }
