@@ -13,6 +13,7 @@ import com.example.glowtales.repository.WordRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.Gson;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@RequiredArgsConstructor
 public class TaleService {
 
     private final TaleRepository taleRepository;
@@ -38,12 +40,12 @@ public class TaleService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaleService.class);
 
-    @Autowired
-    public TaleService(TaleRepository taleRepository, MemberRepository memberRepository,WordRepository wordRepository) {
-        this.taleRepository = taleRepository;
-        this.memberRepository=memberRepository;
-        this.wordRepository=wordRepository;
-    }
+//    @Autowired
+//    public TaleService(TaleRepository taleRepository, MemberRepository memberRepository,WordRepository wordRepository) {
+//        this.taleRepository = taleRepository;
+//        this.memberRepository=memberRepository;
+//        this.wordRepository=wordRepository;
+//    }
 
     //#001 전체 동화 상태창 불러오기
     public HomeInfoResponseDto getHomeInfoByMemberId(Long memberId) {

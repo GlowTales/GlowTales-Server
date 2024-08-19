@@ -1,11 +1,9 @@
 package com.example.glowtales.controller;
 
 import com.example.glowtales.dto.request.TaleRequest;
-import com.example.glowtales.dto.response.HomeInfoResponseDto;
-import com.example.glowtales.dto.response.TaleDetailResponseDto;
-import com.example.glowtales.dto.response.TaleResponseDto;
-import com.example.glowtales.dto.response.WordResponseDto;
+import com.example.glowtales.dto.response.*;
 import com.example.glowtales.service.TaleService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +36,7 @@ public class TaleController {
 
 
     private final TaleService taleService;
+    private final ObjectMapper objectMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(TaleController.class);
 
@@ -84,15 +83,16 @@ public class TaleController {
 
     @Operation(summary = "#010 사진에서 키워드 추출하기", description = "업로드한 사진에서 키워드를 추출하는 API입니다.")
     @PostMapping("/keyword")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<KeywordResponseDto> handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
-            // 파일을 서비스로 전달하고 응답을 받습니다.
-            String response = taleService.getKeyword(file);
-            return ResponseEntity.ok(response);
+            String responseJson = taleService.getKeyword(file);
+            KeywordResponseDto keywordResponseDto = objectMapper.readValue(responseJson, KeywordResponseDto.class);
+            return ResponseEntity.ok(keywordResponseDto);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File processing error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+
     }
 
     @Operation(summary = "#008 동화 만들기", description = "동화를 만드는 API입니다.")
