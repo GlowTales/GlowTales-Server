@@ -156,9 +156,13 @@ public class KakaoService {
             memberRepository.save(kakaoUser);
         }
 
+        return new LoginResponse(nickName, kakaoEmail, validateIsActive(kakaoUser), authTokensGenerator.generate(loginId));
+    }
 
-        //토큰 생성
-        AuthTokens token = authTokensGenerator.generate(loginId);
-        return new LoginResponse(nickName,kakaoEmail,token);
+    private Boolean validateIsActive(Member member) {
+        if (member.getAge() == null || member.getLearningLevel() == null) {
+            return false;
+        }
+        return true;
     }
 }
