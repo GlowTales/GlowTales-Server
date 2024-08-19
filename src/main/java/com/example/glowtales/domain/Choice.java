@@ -26,5 +26,5 @@ public class Choice {
     private String sunji;
 
     @Convert(converter = YesOrNoConverter.class)
-    private YesOrNo is_correct;
+    private YesOrNo isCorrect;
 }

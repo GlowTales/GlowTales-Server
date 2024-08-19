@@ -22,15 +22,15 @@ public class Member {
     private String provider;
     private String providerId;
     private String loginId;
-    private Integer learning_level;
+    private Integer learningLevel;
     private String email;
     private String roles; //USER, ADMIN
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LearningLanguage> learning_language_list = new ArrayList<>();
+    private List<LearningLanguage> learningLanguageList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tale> tale_list = new ArrayList<>();
+    private List<Tale> taleList = new ArrayList<>();
 
     public List<String> getRoleList() {
         if(!this.roles.isEmpty()) {
@@ -40,13 +40,13 @@ public class Member {
     }
 
     @Builder
-    public Member(String name, Integer age, String provider, String providerId, String loginId, Integer learning_level, String email, String roles) {
+    public Member(String name, Integer age, String provider, String providerId, String loginId, Integer learningLevel, String email, String roles) {
         this.name = name;
         this.age = age;
         this.provider = provider;
         this.providerId = providerId;
         this.loginId = loginId;
-        this.learning_level = learning_level;
+        this.learningLevel = learningLevel;
         this.email = email;
         this.roles = roles;
     }

@@ -23,23 +23,23 @@ public class Tale {
     private Member member;
 
     @CreatedDate
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
-    private LocalDateTime studied_at;
+    private LocalDateTime studiedAt;
 
     @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LanguageTale> language_tale_list = new ArrayList<>();
+    private List<LanguageTale> languageTaleList = new ArrayList<>();
 
     //todo 단어장, 키워드 자료형 논의
-    private String word_ids;
-    private String keyword_ids;
+    private String wordIds;
+    private String keywordIds;
 
 
     @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Quiz> quiz_list = new ArrayList<>();
+    private List<Quiz> quizList = new ArrayList<>();
 
     @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TaleWord> tale_word_list = new ArrayList<>();
+    private List<TaleWord> taleWordList = new ArrayList<>();
 
 
 }

@@ -18,9 +18,9 @@ public class TaleResponseDto {
     @Builder
     public TaleResponseDto(Tale tale) {
         this.tale_id = tale.getId();
-        this.created_at = tale.getCreated_at();
+        this.created_at = tale.getCreatedAt();
         this.member_id = tale.getMember().getId();
-        this.title = tale.getLanguage_tale_list().stream()
+        this.title = tale.getLanguageTaleList().stream()
 //                .filter(languageTale -> isKorean(languageTale.getLanguage().getId()))
                 .findFirst()
                 .map(LanguageTaleTitleResponseDto::new)

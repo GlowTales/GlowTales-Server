@@ -17,16 +17,16 @@ public class Language {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String language_name;
+    private String languageName;
 
     @OneToMany(mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LearningLanguage> learning_language_list = new ArrayList<>();
+    private List<LearningLanguage> learningLanguageList = new ArrayList<>();
     @OneToMany(mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LanguageTale> language_tale_list = new ArrayList<>();
+    private List<LanguageTale> languageTaleList = new ArrayList<>();
     @OneToMany(mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Word> word_list = new ArrayList<>();
+    private List<Word> wordList = new ArrayList<>();
     @OneToMany(mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Answer> answer_list = new ArrayList<>();
+    private List<Answer> answerList = new ArrayList<>();
     @OneToMany(mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Choice> choice_list = new ArrayList<>();
+    private List<Choice> choiceList = new ArrayList<>();
 }

@@ -23,11 +23,11 @@ public class Word {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "origin_word_id")
-    private Word origin_word;
+    private Word originWord;
 
-    @OneToMany(mappedBy = "origin_word", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Word> new_word_list = new ArrayList<>();
+    @OneToMany(mappedBy = "originWord", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Word> newWordList = new ArrayList<>();
 
     @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TaleWord> tale_word_list = new ArrayList<>();
+    private List<TaleWord> taleWordList = new ArrayList<>();
 }
