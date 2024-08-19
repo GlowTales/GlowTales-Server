@@ -43,7 +43,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         member.getRoleList().forEach(r -> {
-            authorities.add(() -> r);
+            authorities.add(() -> "ROLE_" + r);
         });
 
         return authorities;
