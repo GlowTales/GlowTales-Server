@@ -35,6 +35,7 @@ public class TaleService {
     private final MemberRepository memberRepository;
 
     private final WordRepository wordRepository;
+    private final MemberService memberService;
 
     private static final Logger logger = LoggerFactory.getLogger(TaleService.class);
 
@@ -46,16 +47,28 @@ public class TaleService {
 //    }
 
     //#001 전체 동화 상태창 불러오기
-    public HomeInfoResponseDto getHomeInfoByMemberId(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member not found with id: " + memberId));
+    public HomeInfoResponseDto getHomeInfoByMemberId(String accessToken) {
+        if (accessToken==null){
+            new RuntimeException("accessToken이 null입니다");}
+        Member member=memberService.findMemberByAccessToken(accessToken);
+        if (member==null){
+            new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+//        Member member = memberRepository.findById(memberId)
+//                .orElseThrow(() -> new RuntimeException("해당 아이디에 맞는 멤버가 없습니다. 아이디: " + memberId));
         return new HomeInfoResponseDto(member);
     }
 
 
+
     //#005 완료하지 않은 동화 모두 불러오기
-    public List<TaleResponseDto> getUnlearnedTaleByMemberId(Long memberId, int count) {
-        List<Tale> tales = taleRepository.findByMemberId(memberId);
+    public List<TaleResponseDto> getUnlearnedTaleByMemberId(String accessToken, int count) {
+        if (accessToken==null){
+            new RuntimeException("accessToken이 null입니다");}
+        Member member=memberService.findMemberByAccessToken(accessToken);
+        if (member==null){
+            new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+
+        List<Tale> tales = taleRepository.findByMemberId(member.getId());
 
         Stream<Tale> taleStream = tales.stream()
                 .filter(tale -> tale.getLanguageTaleList().stream()
@@ -73,8 +86,14 @@ public class TaleService {
 
 
     //#007 최근 학습한 동화 모두 불러오기
-    public List<TaleResponseDto> getStudiedTaleByMemberId(Long memberId, int count) {
-        List<Tale> tales = taleRepository.findByMemberId(memberId);
+    public List<TaleResponseDto> getStudiedTaleByMemberId(String accessToken, int count) {
+        if (accessToken==null){
+            new RuntimeException("accessToken이 null입니다");}
+        Member member=memberService.findMemberByAccessToken(accessToken);
+        if (member==null){
+            new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+
+        List<Tale> tales = taleRepository.findByMemberId(member.getId());
 
         Stream<Tale> taleStream = tales.stream()
                 .filter(tale -> tale.getLanguageTaleList().stream()
@@ -91,8 +110,14 @@ public class TaleService {
     }
 
     //#003 단어장 조회
-    public List<WordResponseDto> getWordByMemberId(Long memberId, int count) {
-        List<Tale> tales = taleRepository.findByMemberId(memberId);
+    public List<WordResponseDto> getWordByMemberId(String accessToken, int count) {
+        if (accessToken==null){
+            new RuntimeException("accessToken이 null입니다");}
+        Member member=memberService.findMemberByAccessToken(accessToken);
+        if (member==null){
+            new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+
+        List<Tale> tales = taleRepository.findByMemberId(member.getId());
         Stream<WordResponseDto> wordStream = tales.stream()
                 .flatMap(tale ->
                         tale.getTaleWordList().stream()
