@@ -1,4 +1,4 @@
-package com.example.glowtales.dto.response;
+package com.example.glowtales.dto.response.tale;
 
 import com.example.glowtales.domain.LanguageTale;
 import com.example.glowtales.domain.Tale;

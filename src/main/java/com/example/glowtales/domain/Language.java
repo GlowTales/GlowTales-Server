@@ -25,8 +25,5 @@ public class Language {
     private List<LanguageTale> languageTaleList = new ArrayList<>();
     @OneToMany(mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Word> wordList = new ArrayList<>();
-    @OneToMany(mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Answer> answerList = new ArrayList<>();
-    @OneToMany(mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Choice> choiceList = new ArrayList<>();
+
 }

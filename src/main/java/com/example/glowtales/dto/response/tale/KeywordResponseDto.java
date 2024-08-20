@@ -1,4 +1,4 @@
-package com.example.glowtales.dto.response;
+package com.example.glowtales.dto.response.tale;
 
 import lombok.Getter;
 import lombok.Setter;

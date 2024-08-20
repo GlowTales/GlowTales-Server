@@ -23,7 +23,7 @@ public class Quiz {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tale_id")
-    private Tale tale;
+    private LanguageTale languageTale;
 
     @OneToOne(mappedBy = "quiz")
     private Answer answer;
