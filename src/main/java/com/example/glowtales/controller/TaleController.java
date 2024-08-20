@@ -25,14 +25,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Tale API", description = "API for managing tales")
 public class TaleController {
 
-//
-//#008 동화 만들기
-//#009 동화의 학습 언어 선택하기
+
 //
 //#011 동화의 퀴즈와 정답 불러오기
-//#012 동화 퀴즈의 답 제출하기
 
-//#013 사용자 학습 언어와 수준 조회 (member)
+//#013 사용자 학습 언어와 수준 조회 GET
+//#014 단일 동화 다국어로 조회 GET
+//result 사용해서 응답 형식 통일하기
+// token->member 갈아끼기
 
 
     private final TaleService taleService;
