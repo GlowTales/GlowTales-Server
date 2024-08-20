@@ -36,9 +36,6 @@ public class Tale {
 
 
     @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Quiz> quizList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaleWord> taleWordList = new ArrayList<>();
 
 

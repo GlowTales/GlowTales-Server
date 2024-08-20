@@ -1,7 +1,7 @@
 package com.example.glowtales.controller;
 
 import com.example.glowtales.dto.request.TaleRequest;
-import com.example.glowtales.dto.response.*;
+import com.example.glowtales.dto.response.tale.*;
 import com.example.glowtales.service.MemberService;
 import com.example.glowtales.service.TaleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,13 +27,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class TaleController {
 
 
-//
 //#011 동화의 퀴즈와 정답 불러오기
-
 //#013 사용자 학습 언어와 수준 조회 GET
 //#014 단일 동화 다국어로 조회 GET
 //result 사용해서 응답 형식 통일하기
-// token->member 갈아끼기
 
 
     private final TaleService taleService;
@@ -52,7 +49,7 @@ public class TaleController {
 
     @Operation(summary = "#005 완료하지 않은 동화 조회", description = "학습을 완료하지 않은 동화를 최신순으로 불러오는 API입니다.")
     @GetMapping("/unlearned")
-    public ResponseEntity<List<TaleResponseDto>> getUnlearnedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken,@RequestParam(name = "count", required = false) Integer count) {
+    public ResponseEntity<List<TaleResponseDto>> getUnlearnedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam(name = "count", required = false) Integer count) {
         logger.info("Count value: {}", count);
         if (count == null) {
             count = -1;//기본값 설정. 제한 없이 모든 동화를 불러옴
@@ -86,7 +83,7 @@ public class TaleController {
 
     @Operation(summary = "#010 사진에서 키워드 추출하기", description = "업로드한 사진에서 키워드를 추출하는 API입니다.")
     @PostMapping("/keyword")
-    public ResponseEntity<KeywordResponseDto> handleFileUpload(@RequestHeader(value = "Authorization", required = true) String accessToken,@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<KeywordResponseDto> handleFileUpload(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam("file") MultipartFile file) {
         try {
             String responseJson = taleService.getKeyword(file);
             KeywordResponseDto keywordResponseDto = objectMapper.readValue(responseJson, KeywordResponseDto.class);

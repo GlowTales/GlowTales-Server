@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Clob;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,5 +36,7 @@ public class LanguageTale {
     private YesOrNo isLearned;
 
     private Integer count;
+    @OneToMany(mappedBy = "languageTale", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Quiz> quizList = new ArrayList<>();
 
 }
