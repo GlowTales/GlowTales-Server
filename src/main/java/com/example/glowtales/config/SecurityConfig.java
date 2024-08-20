@@ -22,6 +22,7 @@ public class SecurityConfig {
     private final CorsFilter corsFilter;
     private final JwtFilter jwtFilter;
     private final PrincipalOauth2UserService principalOauth2UserService;
+
     // 시큐리티 필터는 다른 어떤 필터보다 먼저 실행됨
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -31,7 +32,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) // 폼 로그인 안함
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/members/oauth/**", "/swagger-ui/**", "/api/v1/members/token").permitAll()
+                        .requestMatchers("/api/v1/members/oauth/**", "/swagger-ui/**", "/api/v1/members/token", "/v3/api-docs/**").permitAll()
                         .anyRequest().hasRole("USER")
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -20,7 +20,18 @@ import java.util.List;
 public class JwtFilter extends HttpFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private static final List<String> EXCLUDE_URLS = List.of("/api/v1/members/oauth/kakao/login", "/swagger-ui/index.html", "/api/v1/members/token");
+    private static final List<String> EXCLUDE_URLS = List.of("/api/v1/members/oauth/kakao/login", "/swagger-ui/index.html", "/api/v1/members/token", "/swagger-ui/index.html",
+            "/swagger-ui/swagger-ui-standalone-preset.js",
+            "/swagger-ui/swagger-initializer.js",
+            "/swagger-ui/swagger-ui-bundle.js",
+            "/swagger-ui/swagger-ui.css",
+            "/swagger-ui/index.css",
+            "/v3/api-docs",
+            "/swagger-ui/favicon-32x32.png",
+            "/swagger-ui/favicon-16x16.png",
+            "/api-docs/json/swagger-config",
+            "/api-docs/json",
+            "/v3/api-docs/swagger-config");
 
 
     @Override
