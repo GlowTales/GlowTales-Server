@@ -16,11 +16,9 @@ import com.nimbusds.jose.shaded.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,7 +54,7 @@ public class TaleService {
 
 
     //#005 완료하지 않은 동화 모두 불러오기
-    public List<TaleResponseDto> getUnlearnedTaleByMemberId(Long memberId,int count) {
+    public List<TaleResponseDto> getUnlearnedTaleByMemberId(Long memberId, int count) {
         List<Tale> tales = taleRepository.findByMemberId(memberId);
 
         Stream<Tale> taleStream = tales.stream()
@@ -120,10 +118,10 @@ public class TaleService {
     private String accessKey;
 
     @Value("${api.deepL.open-api-url}")
-    private  String deeplApiUrl;
+    private String deeplApiUrl;
 
     @Value("${api.deepL.access-key}")
-    private  String authKey;
+    private String authKey;
 
     public String getKeyword(MultipartFile file) throws IOException {
         byte[] fileBytes = file.getBytes();
