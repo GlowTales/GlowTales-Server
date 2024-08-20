@@ -4,6 +4,7 @@ import com.example.glowtales.config.jwt.JwtTokenProvider;
 import com.example.glowtales.domain.LearningLanguage;
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.dto.request.MemberForm;
+import com.example.glowtales.dto.response.member.LearningLanguageResponseDto;
 import com.example.glowtales.repository.LauguageRepository;
 import com.example.glowtales.repository.LearningLanguageRepository;
 import com.example.glowtales.repository.MemberRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -51,5 +53,16 @@ public class MemberService {
 
     public String getAccessToken() {
         return jwtTokenProvider.accessTokenGenerate("1", new Date((new Date()).getTime() + 1000 * 60 * 60));
+    }
+
+    public List<LearningLanguageResponseDto> getLanguageLearningDataByMemberId(String accessToken) {
+        if (accessToken==null){
+            throw new RuntimeException("accessToken이 null입니다");}
+        Member member=findMemberByAccessToken(accessToken);
+        if (member==null){
+            throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+        List<LearningLanguage> learningLanguages = learningLanguageRepository.findByMemberId(member.getId());
+
+        return LearningLanguageResponseDto.from(learningLanguages);
     }
 }
