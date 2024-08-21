@@ -18,6 +18,8 @@ public class Quiz {
 
     private Integer cd;
 
+    private String question;
+
     @Enumerated(EnumType.STRING)
     private YesOrNo isLearned;
 
