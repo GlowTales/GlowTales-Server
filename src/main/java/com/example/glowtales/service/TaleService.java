@@ -3,13 +3,10 @@ package com.example.glowtales.service;
 import com.example.glowtales.domain.LanguageTale;
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.domain.Tale;
-import com.example.glowtales.domain.Word;
+import com.example.glowtales.dto.request.TaleRequest;
 import com.example.glowtales.dto.request.TranslationRequest;
 import com.example.glowtales.dto.response.tale.*;
-import com.example.glowtales.repository.LanguageTaleRepository;
-import com.example.glowtales.repository.MemberRepository;
-import com.example.glowtales.repository.TaleRepository;
-import com.example.glowtales.repository.WordRepository;
+import com.example.glowtales.repository.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.Gson;
@@ -19,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +35,8 @@ public class TaleService {
     private final WordRepository wordRepository;
     private final MemberService memberService;
     private final LanguageTaleRepository languageTaleRepository;
+    private final PromptService promptService;
+    private final LanguageRepository languageRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(TaleService.class);
 
@@ -278,6 +278,25 @@ public class TaleService {
             throw new RuntimeException("본인의 동화에만 접근할 수 있습니다.");
         }
         return new LanguageTaleDetailResponseDto(foundLanguageTale.getTale(),languageId);
+    }
+
+    // 동화 만들기
+    @Transactional
+    public Long createLanguageTales(TaleRequest taleRequest, String accessToken) {
+        // 1. accessToken -> member 반환
+        Member member = memberService.findMemberByAccessToken(accessToken);
+        // 2. chatgpt한테 story 받아오기
+//        List<TaleDetailResponseDto> tales = promptService.createInitialTales(taleRequest, member);
+        List<TaleDetailResponseDto> languageTales = promptService.test();
+        // 3. tale 저장
+        Tale tale = taleRepository.save(new Tale(member));
+        // 4. languageTale 저장
+        for (TaleDetailResponseDto languageTaleDto : languageTales) {
+            System.out.println("시작: ");
+            languageTaleRepository.save(TaleDetailResponseDto.to(languageTaleDto, tale, languageRepository.findByLanguageName(languageTaleDto.getLanguageName())));
+            System.out.println("들어감: " + languageTaleDto.getLanguageName());
+        }
+        return tale.getId();
     }
 
 }

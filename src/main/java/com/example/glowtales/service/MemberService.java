@@ -5,7 +5,7 @@ import com.example.glowtales.domain.LearningLanguage;
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.dto.request.MemberForm;
 import com.example.glowtales.dto.response.member.LearningLanguageResponseDto;
-import com.example.glowtales.repository.LauguageRepository;
+import com.example.glowtales.repository.LanguageRepository;
 import com.example.glowtales.repository.LearningLanguageRepository;
 import com.example.glowtales.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final LauguageRepository lauguageRepository;
+    private final LanguageRepository languageRepository;
     private final LearningLanguageRepository learningLanguageRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -44,7 +44,7 @@ public class MemberService {
         // learningLanguage 저장
        learningLanguageRepository.save(
                LearningLanguage.builder()
-                .language(lauguageRepository.findById(memberForm.getLanguageId()).orElseThrow(() -> new NoSuchElementException("일치하는 언어가 존재하지 않습니다.")))
+                .language(languageRepository.findById(memberForm.getLanguageId()).orElseThrow(() -> new NoSuchElementException("일치하는 언어가 존재하지 않습니다.")))
                 .member(member)
                 .learningLevel(memberForm.getLearningLevel())
                 .build()

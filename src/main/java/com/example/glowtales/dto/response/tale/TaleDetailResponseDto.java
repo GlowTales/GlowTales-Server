@@ -1,7 +1,9 @@
 package com.example.glowtales.dto.response.tale;
 
+import com.example.glowtales.domain.Language;
 import com.example.glowtales.domain.LanguageTale;
 import com.example.glowtales.domain.Tale;
+import com.example.glowtales.domain.YesOrNo;
 import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,12 +17,9 @@ import java.util.Optional;
 @Setter
 public class TaleDetailResponseDto {
     private Long taleId;
+    private Long languageTaleId;
     private String title;
-    private String language;
-//    @Lob
-//    private Clob story;
-
-    //test 반환용 코드
+    private String languageName;
     private String story;
 
 //    @Builder
@@ -43,12 +42,40 @@ public class TaleDetailResponseDto {
 //
 //    }
 
-//test 객체 반환용 코드
+    //test 객체 반환용 코드
     @Builder
-    public TaleDetailResponseDto(Long taleId, String title, String language, String story) {
+    public TaleDetailResponseDto(Long taleId, Long languageTaleId, String title, String languageName, String story) {
         this.taleId = taleId;
+        this.languageTaleId = languageTaleId;
         this.title = title;
-        this.language = language;
+        this.languageName = languageName;
         this.story = story;
+    }
+
+    public TaleDetailResponseDto(String title, String languageName, String story) {
+        this.title = title;
+        this.languageName = languageName;
+        this.story = story;
+    }
+
+    public static TaleDetailResponseDto of(LanguageTale languageTale, Tale tale) {
+        return TaleDetailResponseDto.builder()
+                .languageTaleId(languageTale.getId())
+                .taleId(tale.getId())
+                .title(languageTale.getTitle())
+                .languageName(languageTale.getLanguage().getLanguageName())
+                .story(languageTale.getStory())
+                .build();
+    }
+
+    public static LanguageTale to(TaleDetailResponseDto taleDetailResponseDto, Tale tale, Language language) {
+        return LanguageTale.builder()
+                .language(language)
+                .tale(tale)
+                .isLearned(YesOrNo.NO)
+                .count(0)
+                .title(taleDetailResponseDto.getTitle())
+                .story(taleDetailResponseDto.getStory())
+                .build();
     }
 }

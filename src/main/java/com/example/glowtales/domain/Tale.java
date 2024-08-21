@@ -38,5 +38,7 @@ public class Tale {
     @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaleWord> taleWordList = new ArrayList<>();
 
-
+    public Tale(Member member) {
+        this.member = member;
+    }
 }
