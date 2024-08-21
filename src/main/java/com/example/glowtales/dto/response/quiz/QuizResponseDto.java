@@ -12,6 +12,7 @@ public class QuizResponseDto {
     private Long taleId;
     private Integer field;
     private Integer isLearned;
+    private String question;
 
     @Builder
     public QuizResponseDto(Quiz quiz) {
@@ -19,5 +20,6 @@ public class QuizResponseDto {
         this.taleId = quiz.getLanguageTale().getId();
         this.field = quiz.getCd();
         this.isLearned = quiz.getIsLearned().getValue();
+        this.question=quiz.getQuestion();
     }
 }

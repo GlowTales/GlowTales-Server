@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class MultipleChoiceResponseDto extends QuizResponseDto {
     private List<ChoiceDto> choiceList;
 
-    @Builder
+    @Builder(builderMethodName = "multipleChoiceResponseDtoBuilder")
     public MultipleChoiceResponseDto(Quiz quiz) {
         super(quiz);
         this.choiceList = quiz.getChoiceList().stream()

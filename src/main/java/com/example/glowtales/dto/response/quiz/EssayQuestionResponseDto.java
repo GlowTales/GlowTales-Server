@@ -11,7 +11,7 @@ import lombok.Setter;
 public class EssayQuestionResponseDto extends QuizResponseDto {
     private AnswerDto answer;
 
-    @Builder
+    @Builder(builderMethodName = "essayQuestionResponseDtoBuilder")
     public EssayQuestionResponseDto(Quiz quiz) {
         super(quiz);
         this.answer = new AnswerDto(quiz.getAnswer());
