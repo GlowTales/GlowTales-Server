@@ -1,12 +1,12 @@
 package com.example.glowtales.service;
 
+import com.example.glowtales.domain.LanguageTale;
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.domain.Tale;
+import com.example.glowtales.domain.Word;
 import com.example.glowtales.dto.request.TranslationRequest;
-import com.example.glowtales.dto.response.tale.HomeInfoResponseDto;
-import com.example.glowtales.dto.response.tale.TaleResponseDto;
-import com.example.glowtales.dto.response.tale.TranslationResponse;
-import com.example.glowtales.dto.response.tale.WordResponseDto;
+import com.example.glowtales.dto.response.tale.*;
+import com.example.glowtales.repository.LanguageTaleRepository;
 import com.example.glowtales.repository.MemberRepository;
 import com.example.glowtales.repository.TaleRepository;
 import com.example.glowtales.repository.WordRepository;
@@ -36,6 +36,7 @@ public class TaleService {
 
     private final WordRepository wordRepository;
     private final MemberService memberService;
+    private final LanguageTaleRepository languageTaleRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(TaleService.class);
 
@@ -49,10 +50,10 @@ public class TaleService {
     //#001 전체 동화 상태창 불러오기
     public HomeInfoResponseDto getHomeInfoByMemberId(String accessToken) {
         if (accessToken==null){
-            new RuntimeException("accessToken이 null입니다");}
+            throw new RuntimeException("accessToken이 null입니다");}
         Member member=memberService.findMemberByAccessToken(accessToken);
         if (member==null){
-            new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+            throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
 //        Member member = memberRepository.findById(memberId)
 //                .orElseThrow(() -> new RuntimeException("해당 아이디에 맞는 멤버가 없습니다. 아이디: " + memberId));
         return new HomeInfoResponseDto(member);
@@ -63,35 +64,10 @@ public class TaleService {
     //#005 완료하지 않은 동화 모두 불러오기
     public List<TaleResponseDto> getUnlearnedTaleByMemberId(String accessToken, int count) {
         if (accessToken==null){
-            new RuntimeException("accessToken이 null입니다");}
+            throw new RuntimeException("accessToken이 null입니다");}
         Member member=memberService.findMemberByAccessToken(accessToken);
         if (member==null){
-            new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
-
-        List<Tale> tales = taleRepository.findByMemberId(member.getId());
-
-        Stream<Tale> taleStream = tales.stream()
-                .filter(tale -> tale.getLanguageTaleList().stream()
-                        .anyMatch(languageTale -> languageTale.getLanguage().getId() == 1 && languageTale.getIsLearned().getValue() == 2))
-                .sorted(Comparator.comparing(Tale::getStudiedAt).reversed());
-
-        if (count > 0) {
-            taleStream = taleStream.limit(count);
-        }
-
-        return taleStream
-                .map(TaleResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
-
-    //#007 최근 학습한 동화 모두 불러오기
-    public List<TaleResponseDto> getStudiedTaleByMemberId(String accessToken, int count) {
-        if (accessToken==null){
-            new RuntimeException("accessToken이 null입니다");}
-        Member member=memberService.findMemberByAccessToken(accessToken);
-        if (member==null){
-            new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+            throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
 
         List<Tale> tales = taleRepository.findByMemberId(member.getId());
 
@@ -109,13 +85,38 @@ public class TaleService {
                 .collect(Collectors.toList());
     }
 
+
+    //#007 최근 학습한 동화 모두 불러오기
+    public List<TaleResponseDto> getStudiedTaleByMemberId(String accessToken, int count) {
+        if (accessToken==null){
+            throw new RuntimeException("accessToken이 null입니다");}
+        Member member=memberService.findMemberByAccessToken(accessToken);
+        if (member==null){
+            throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+
+        List<Tale> tales = taleRepository.findByMemberId(member.getId());
+
+        Stream<Tale> taleStream = tales.stream()
+                .filter(tale -> tale.getLanguageTaleList().stream()
+                        .anyMatch(languageTale -> languageTale.getLanguage().getId() == 1 && languageTale.getIsLearned().getValue() == 0))
+                .sorted(Comparator.comparing(Tale::getStudiedAt).reversed());
+
+        if (count > 0) {
+            taleStream = taleStream.limit(count);
+        }
+
+        return taleStream
+                .map(TaleResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
     //#003 단어장 조회
     public List<WordResponseDto> getWordByMemberId(String accessToken, int count) {
         if (accessToken==null){
-            new RuntimeException("accessToken이 null입니다");}
+            throw new RuntimeException("accessToken이 null입니다");}
         Member member=memberService.findMemberByAccessToken(accessToken);
         if (member==null){
-            new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+            throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
 
         List<Tale> tales = taleRepository.findByMemberId(member.getId());
         Stream<WordResponseDto> wordStream = tales.stream()
@@ -231,4 +232,52 @@ public class TaleService {
             throw new RuntimeException("번역 실패. 상태 코드: " + response.getStatusCode());
         }
     }
+
+    //#014 단일 동화 조회
+    public LanguageTaleDetailResponseDto getTaleBylanguageTaleId(String accessToken, Long languageTaleId) {
+        if (accessToken==null){
+            throw new RuntimeException("accessToken이 null입니다");}
+        Member member=memberService.findMemberByAccessToken(accessToken);
+        if (member==null){
+            throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+
+        if (languageTaleId == null) {
+            throw new RuntimeException("languageTaleId이 null입니다");
+        }
+        LanguageTale languageTale = languageTaleRepository.findById(languageTaleId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이디인 languageTale이 없습니다. 아이디: " + languageTaleId));
+        if(languageTale.getTale().getMember() != member){
+            throw new RuntimeException("본인의 동화에만 접근할 수 있습니다.");
+        }
+        return new LanguageTaleDetailResponseDto(languageTale.getTale(),languageTale.getLanguage().getId());
+    }
+
+    //#015 단일 동화 다국어로 조회
+    public LanguageTaleDetailResponseDto getTaleBylanguageTaleIdLanguageId(String accessToken, Long taleId,Long languageId) {
+        if (accessToken==null){
+            throw new RuntimeException("accessToken이 null입니다");}
+        Member member=memberService.findMemberByAccessToken(accessToken);
+        if (member==null){
+            throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");}
+
+        if (taleId == null) {
+            throw new RuntimeException("TaleId가 null입니다");
+        }
+        if (languageId == null) {
+            throw new RuntimeException("languageId가 null입니다");
+        }
+
+        Tale tale = taleRepository.findById(taleId)
+                .orElseThrow(() -> new NoSuchElementException("해당 아이디인 tale이 없습니다. 아이디: " + taleId));
+        LanguageTale foundLanguageTale = tale.getLanguageTaleList().stream()
+                .filter(lt -> lt.getLanguage().getId() == languageId)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("해당 언어로 생성된 languageTale 없습니다. tale 아이디: " + taleId+" 언어 아이디:"+languageId));
+
+        if(foundLanguageTale.getTale().getMember() != member){
+            throw new RuntimeException("본인의 동화에만 접근할 수 있습니다.");
+        }
+        return new LanguageTaleDetailResponseDto(foundLanguageTale.getTale(),languageId);
+    }
+
 }
