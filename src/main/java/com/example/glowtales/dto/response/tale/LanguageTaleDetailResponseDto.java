@@ -20,7 +20,7 @@ public class LanguageTaleDetailResponseDto {
     private Long languageTaleId;
     private String title;
     private String language;
-    private String story;  // Clob을 String으로 변경
+    private String story;
 
     @Builder
     public LanguageTaleDetailResponseDto(Tale tale, Long languageId) {
@@ -36,33 +36,37 @@ public class LanguageTaleDetailResponseDto {
         this.title = firstLanguageTale
                 .map(LanguageTale::getTitle)
                 .orElse("동화가 존재하지 않습니다");
-
         this.story = firstLanguageTale
-                .map(languageTale -> {
-                    try {
-                        return convertClobToString(languageTale.getStory());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .orElse(null);
+                .map(LanguageTale::getStory)
+                .orElse("내용이 존재하지 않습니다");
+
+
+//        this.story = firstLanguageTale
+//                .map(languageTale -> {
+//                    try {
+//                        return convertClobToString(languageTale.getStory());
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                        return null;
+//                    }
+//                })
+//                .orElse(null);
     }
 
-    private String convertClobToString(Clob clob) throws SQLException {
-        if (clob == null) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        try (Reader reader = clob.getCharacterStream()) {
-            char[] buffer = new char[1024];
-            int bytesRead;
-            while ((bytesRead = reader.read(buffer)) != -1) {
-                sb.append(buffer, 0, bytesRead);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
+//    private String convertClobToString(Clob clob) throws SQLException {
+//        if (clob == null) {
+//            return null;
+//        }
+//        StringBuilder sb = new StringBuilder();
+//        try (Reader reader = clob.getCharacterStream()) {
+//            char[] buffer = new char[1024];
+//            int bytesRead;
+//            while ((bytesRead = reader.read(buffer)) != -1) {
+//                sb.append(buffer, 0, bytesRead);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return sb.toString();
+//    }
 }
