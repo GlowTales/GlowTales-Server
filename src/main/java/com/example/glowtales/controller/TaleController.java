@@ -27,11 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class TaleController {
 
 
-//#011 동화의 퀴즈와 정답 불러오기
-//#013 사용자 학습 언어와 수준 조회 GET
-//#014 단일 동화 다국어로 조회 GET
-//result 사용해서 응답 형식 통일하기
-
 
     private final TaleService taleService;
     private final MemberService memberService;
@@ -94,6 +89,32 @@ public class TaleController {
         }
 
     }
+
+    @Operation(summary = "#014 단일 동화 조회", description = "languageTaleId를 통해 단일 동화를 조회하는 API입니다. 홈화면,학습하기 화면에서 단일 동화를 조회할 때 사용합니다.")
+    @GetMapping("/detail")
+    public ResponseEntity<LanguageTaleDetailResponseDto> getTaleBylanguageTaleId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam Long languageTaleId) {
+        try {
+            LanguageTaleDetailResponseDto response = taleService.getTaleBylanguageTaleId(accessToken, languageTaleId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @Operation(summary = "#015 단일 동화 다국어로 조회", description = "TaleId와 languageId를 통해 단일 동화를 조회하는 API입니다. 동화 생성 후 언어를 바꿀때 사용합니다.1 = 영어 , 2 = 한국어 , 3 = 일본어 , 4 = 중국어")
+    @GetMapping("/detail/lan")
+    public ResponseEntity<LanguageTaleDetailResponseDto> getTaleBylanguageTaleIdLanguageId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam Long taleId,Long languageId) {
+        try {
+            LanguageTaleDetailResponseDto response = taleService.getTaleBylanguageTaleIdLanguageId( accessToken,  taleId, languageId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+
+    }
+
 
     @Operation(summary = "#008 동화 만들기", description = "동화를 만드는 API입니다.")
     @PostMapping("/new")
