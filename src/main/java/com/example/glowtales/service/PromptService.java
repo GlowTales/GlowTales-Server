@@ -9,6 +9,7 @@ import com.example.glowtales.repository.LanguageTaleRepository;
 import com.example.glowtales.repository.TaleRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -221,7 +222,7 @@ public class PromptService {
                 "}\n";
     }
 
-    public String testQuiz() throws Exception {
+    public JSONObject testQuiz() throws Exception {
         String prompt = """
                 You are an AI assistant that helps create quizzes based on fairy tales. I will provide you with a fairy tale text and specify the learning level of the students. Your task is to extract keywords and key sentences from the story, and then generate a quiz based on the provided learning level. Please follow the structure below for your response:
                 
@@ -303,7 +304,7 @@ public class PromptService {
                     ]
                 ]
                 """;
-        return extractContent(getChatResponse(prompt));
+        return new JSONObject(extractContent(getChatResponse(prompt)));
     }
 
     private String getChatResponse(String prompt) {
@@ -338,9 +339,6 @@ public class PromptService {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                System.out.println("title: " + jsonObject.optString("title", "Untitled"));
-                System.out.println("language: " + jsonObject.optString("language", "Unknown"));
-                System.out.println("story: " + jsonObject.optString("story", "No story available"));
                 tales.add(
                         new TaleDetailResponseDto(
                                 jsonObject.optString("title", "Untitled"),
