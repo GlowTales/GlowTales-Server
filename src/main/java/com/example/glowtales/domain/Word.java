@@ -2,6 +2,7 @@ package com.example.glowtales.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,4 +31,11 @@ public class Word {
 
     @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaleWord> taleWordList = new ArrayList<>();
+
+    @Builder
+    public Word(Language language, String mark, Word originWord) {
+        this.language = language;
+        this.mark = mark;
+        this.originWord = originWord;
+    }
 }

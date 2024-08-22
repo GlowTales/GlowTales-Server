@@ -2,6 +2,7 @@ package com.example.glowtales.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,12 +28,23 @@ public class Quiz {
     @JoinColumn(name = "tale_id")
     private LanguageTale languageTale;
 
-    @OneToOne(mappedBy = "quiz")
-    private Answer answer;
+//    @OneToOne(mappedBy = "quiz")
+//    private Answer answer;
+
+    private String answer;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Choice> choiceList = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Arrangement> arrangementList = new ArrayList<>();
+
+    @Builder
+    public Quiz(Integer cd, String question, YesOrNo isLearned, LanguageTale languageTale, String answer) {
+        this.cd = cd;
+        this.question = question;
+        this.isLearned = isLearned;
+        this.languageTale = languageTale;
+        this.answer = answer;
+    }
 }

@@ -9,24 +9,27 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EssayQuestionResponseDto extends QuizResponseDto {
-    private AnswerDto answer;
-
-    @Builder(builderMethodName = "essayQuestionResponseDtoBuilder")
     public EssayQuestionResponseDto(Quiz quiz) {
         super(quiz);
-        this.answer = new AnswerDto(quiz.getAnswer());
     }
+//    private AnswerDto answer;
 
-    @Getter
-    @Setter
-    public static class AnswerDto {
-        private Long id;
-        private String answer;
+//    @Builder(builderMethodName = "essayQuestionResponseDtoBuilder")
+//    public EssayQuestionResponseDto(Quiz quiz) {
+//        super(quiz);
+//        this.answer = new AnswerDto(quiz.getAnswer());
+//    }
 
-        @Builder
-        public AnswerDto(Answer answer) {
-            this.id = answer.getId();
-            this.answer = answer.getAnswer();
-        }
-    }
+//    @Getter
+//    @Setter
+//    public static class AnswerDto {
+//        private Long id;
+//        private String answer;
+//
+//        @Builder
+//        public AnswerDto(Answer answer) {
+//            this.id = answer.getId();
+//            this.answer = answer.getAnswer();
+//        }
+//    }
 }

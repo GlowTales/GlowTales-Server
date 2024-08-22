@@ -1,35 +1,31 @@
 package com.example.glowtales.domain;
 
-import com.example.glowtales.converter.YesOrNoConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Choice {
+public class Sequence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
-    //TODO 변수명 변경 필요
-    private String sunji;
-
-    @Convert(converter = YesOrNoConverter.class)
-    private YesOrNo isCorrect;
+    private String word;
+    private Integer orders;
 
     @Builder
-    public Choice(Quiz quiz, String sunji, YesOrNo isCorrect) {
+    public Sequence(Quiz quiz, String word, Integer orders) {
         this.quiz = quiz;
-        this.sunji = sunji;
-        this.isCorrect = isCorrect;
+        this.word = word;
+        this.orders = orders;
     }
 }
