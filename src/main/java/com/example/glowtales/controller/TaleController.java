@@ -52,26 +52,26 @@ public class TaleController {
         return ResponseEntity.ok(infos);
     }
 
-    @Operation(summary = "#005 완료하지 않은 동화 조회", description = "학습을 완료하지 않은 동화를 최신순으로 불러오는 API입니다.")
+    @Operation(summary = "#005 완료하지 않은 동화 조회", description = "학습을 완료하지 않은 동화를 최신순으로 불러오는 API입니다. count는 limit을 의미하며, koreanVersion 은 홈/학습하기 화면에서 쓰이는 조건입니다.(홈/학습하기에는 한국어 버전의 동화만 보이며 미리보기로 화면에 보이는 동화의 수가 제한되어있음)")
     @GetMapping("/unlearned")
-    public ResponseEntity<List<TaleResponseDto>> getUnlearnedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam(name = "count", required = false) Integer count) {
+    public ResponseEntity<List<TaleResponseDto>> getUnlearnedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam(name = "count", required = false) Integer count, @RequestParam Boolean koreanVersion) {
         logger.info("Count value: {}", count);
         if (count == null) {
             count = -1;//기본값 설정. 제한 없이 모든 동화를 불러옴
         }
-        List<TaleResponseDto> posts = taleService.getUnlearnedTaleByMemberId(accessToken, count);
+        List<TaleResponseDto> posts = taleService.getUnlearnedTaleByMemberId(accessToken, count, koreanVersion);
         return ResponseEntity.ok(posts);
     }
 
 
-    @Operation(summary = "#007 최근 학습한 동화 전체 조회", description = "최근 학습한 동화를 최신순으로 불러오는 API입니다.")
+    @Operation(summary = "#007 최근 학습한 동화 전체 조회", description = "최근 학습한 동화를 최신순으로 불러오는 API입니다.count는 limit을 의미하며, koreanVersion 은 홈/학습하기 화면에서 쓰이는 조건입니다.(홈/학습하기에는 한국어 버전의 동화만 보이며 미리보기로 화면에 보이는 동화의 수가 제한되어있음)")
     @GetMapping("/studied")
-    public ResponseEntity<List<TaleResponseDto>> getStudiedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam(name = "count", required = false) Integer count) {
+    public ResponseEntity<List<TaleResponseDto>> getStudiedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam(name = "count", required = false) Integer count, @RequestParam Boolean koreanVersion) {
         logger.info("Count value: {}", count);
         if (count == null) {
             count = -1;//기본값 설정. 제한 없이 모든 동화를 불러옴
         }
-        List<TaleResponseDto> posts = taleService.getStudiedTaleByMemberId(accessToken, count);
+        List<TaleResponseDto> posts = taleService.getStudiedTaleByMemberId(accessToken, count, koreanVersion);
         return ResponseEntity.ok(posts);
     }
 
@@ -114,7 +114,7 @@ public class TaleController {
 
     @Operation(summary = "#015 단일 동화 다국어로 조회", description = "TaleId와 languageId를 통해 단일 동화를 조회하는 API입니다. 동화 생성 후 언어를 바꿀때 사용합니다.1 = 영어 , 2 = 한국어 , 3 = 일본어 , 4 = 중국어")
     @GetMapping("/detail/lan")
-    public ResponseEntity<LanguageTaleDetailResponseDto> getTaleBylanguageTaleIdLanguageId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam Long taleId, Long languageId) {
+    public ResponseEntity<LanguageTaleDetailResponseDto> getTaleBylanguageTaleIdLanguageId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam Long taleId, @RequestParam Long languageId) {
         try {
             LanguageTaleDetailResponseDto response = taleService.getTaleBylanguageTaleIdLanguageId(accessToken, taleId, languageId);
             return ResponseEntity.ok(response);

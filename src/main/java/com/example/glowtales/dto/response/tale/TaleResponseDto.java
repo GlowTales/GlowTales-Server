@@ -1,27 +1,27 @@
 package com.example.glowtales.dto.response.tale;
 
-import com.example.glowtales.domain.Tale;
+import com.example.glowtales.domain.LanguageTale;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class TaleResponseDto {
     private Long tale_id;
+    private LocalDateTime createdAt;
     private LanguageTaleTitleResponseDto languageTale;
 
-    @Builder
-    public TaleResponseDto(Tale tale) {
-        this.tale_id = tale.getId();
-        this.languageTale = tale.getLanguageTaleList().stream()
-//                .filter(languageTale -> isKorean(languageTale.getLanguage().getId()))
-                .findFirst()
-                .map(LanguageTaleTitleResponseDto::new)
-                .orElse(null);
-    }
+    private Integer firstQuizCount;
 
-//    private boolean isKorean(Long language_id) {
-//        return language_id == 1;
-//    }
+    @Builder
+    public TaleResponseDto(LanguageTale languageTale) {
+        this.tale_id = languageTale.getTale().getId();
+        this.createdAt=languageTale.getTale().getCreatedAt();
+        this.languageTale = new LanguageTaleTitleResponseDto(languageTale);
+        this.firstQuizCount=languageTale.getFistQuizCount();
+
+    }
 }
