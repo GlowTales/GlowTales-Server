@@ -32,12 +32,18 @@ public class LanguageTale {
 
     private String title;
 
+    private Integer fistQuizCount;
+
     @Convert(converter = YesOrNoConverter.class)
     private YesOrNo isLearned;
 
     private Integer count;
     @OneToMany(mappedBy = "languageTale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Quiz> quizList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "languageTale", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LanguageTaleWord> languageTaleWordList = new ArrayList<>();
+
 
     @Builder
     public LanguageTale(Language language, Tale tale, String story, String title, YesOrNo isLearned, Integer count) {

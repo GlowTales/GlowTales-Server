@@ -59,7 +59,7 @@ public class QuizService {
                     totalQuizResponseDto.addMultipleChoice(new MultipleChoiceResponseDto(quiz));
                     break;
                 case 2:
-//                    totalQuizResponseDto.addEssayQuestion(new EssayQuestionResponseDto(quiz));
+                    totalQuizResponseDto.addEssayQuestion(new EssayQuestionResponseDto(quiz));
                     break;
                 case 3:
                     totalQuizResponseDto.addSentenceArrangement(new SentenceArrangementResponseDto(quiz));
@@ -226,10 +226,10 @@ public class QuizService {
                 for (int j = 0; j < sequences.length(); j++) {
                     sequenceRepository.save(
                             Sequence.builder()
-                                    .orders(j+1)
+                                    .orders(j + 1)
                                     .quiz(quiz)
                                     .word(sequences.getString(j))
-                            .build());
+                                    .build());
                 }
 
                 System.out.println("문자 배열 저장 완료");

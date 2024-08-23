@@ -31,7 +31,7 @@ public class QuizController {
     }
 
 
-    @Operation(summary = "#011 동화의 퀴즈와 정답 조회", description = "languageTaleId를 통해 퀴즈와 정답을 조회하는 API입니다.")
+    //    @Operation(summary = "#011 동화의 퀴즈와 정답 조회", description = "languageTaleId를 통해 퀴즈와 정답을 조회하는 API입니다.")
     @PostMapping("/")
     public Result createQuiz(@RequestBody @Valid QuizForm quizForm, @RequestHeader(value = "Authorization") String accessToken) {
         try {

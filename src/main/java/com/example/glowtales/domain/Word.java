@@ -30,7 +30,7 @@ public class Word {
     private List<Word> newWordList = new ArrayList<>();
 
     @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TaleWord> taleWordList = new ArrayList<>();
+    private List<LanguageTaleWord> languageTaleWordList = new ArrayList<>();
 
     @Builder
     public Word(Language language, String mark, Word originWord) {
