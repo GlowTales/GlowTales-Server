@@ -4,6 +4,7 @@ import com.example.glowtales.domain.ResultCode;
 import com.example.glowtales.dto.Result;
 import com.example.glowtales.dto.request.TaleRequest;
 import com.example.glowtales.dto.response.tale.*;
+import com.example.glowtales.service.LanguageTaleService;
 import com.example.glowtales.service.MemberService;
 import com.example.glowtales.service.PromptService;
 import com.example.glowtales.service.TaleService;
@@ -40,6 +41,7 @@ public class TaleController {
     private final TaleService taleService;
     private final MemberService memberService;
     private final ObjectMapper objectMapper;
+    private final LanguageTaleService languageTaleService;
 
     private static final Logger logger = LoggerFactory.getLogger(TaleController.class);
     private final PromptService promptService;
@@ -134,6 +136,16 @@ public class TaleController {
         try {
 
             return new Result(ResultCode.SUCCESS, taleService.createLanguageTales(taleRequest, accessToken));
+        } catch (Exception e) {
+            return new Result(ResultCode.FAIL, e.getMessage(), "400");
+        }
+    }
+
+    @PutMapping("/")
+    public Result updateLanguageTale(@RequestBody @Valid LanguageTaleDto languageTaleDto) {
+        try {
+            languageTaleService.updateIsLearned(languageTaleDto);
+            return new Result(ResultCode.SUCCESS, null);
         } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }

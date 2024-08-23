@@ -1,7 +1,6 @@
 package com.example.glowtales.service;
 
 import com.example.glowtales.domain.Member;
-import com.example.glowtales.dto.request.QuizForm;
 import com.example.glowtales.dto.request.TaleRequest;
 import com.example.glowtales.dto.response.tale.TaleDetailResponseDto;
 import com.example.glowtales.repository.LanguageRepository;
@@ -9,7 +8,6 @@ import com.example.glowtales.repository.LanguageTaleRepository;
 import com.example.glowtales.repository.TaleRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -142,7 +140,7 @@ public class PromptService {
         String prompt = "You are an AI assistant that helps create quizzes based on fairy tales. I will provide you with a fairy tale text and specify the learning level of the students. Your task is to extract keywords and key sentences from the story, and then generate a quiz based on the provided learning level. Please follow the structure below for your response:\n" +
                 "\n" +
                 "### Parameters:\n" +
-                "- **Fairy Tale Text**: " + tale +"\n" +
+                "- **Fairy Tale Text**: " + tale + "\n" +
                 "- **Learning Level**: " + learningLevel + "\n" +
                 "\n" +
                 "### Instructions:\n" +

@@ -36,6 +36,8 @@ public class LanguageTale {
     private YesOrNo isLearned;
 
     private Integer count;
+    private Integer firstQuizCount;
+
     @OneToMany(mappedBy = "languageTale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Quiz> quizList = new ArrayList<>();
 
@@ -47,5 +49,11 @@ public class LanguageTale {
         this.title = title;
         this.isLearned = isLearned;
         this.count = count;
+    }
+
+    public void updateIsLearnedAndCountAndFirstQuizCount(YesOrNo isLearned, Integer count, Integer firstQuizCount) {
+        this.isLearned = isLearned;
+        this.count = count;
+        this.firstQuizCount = firstQuizCount;
     }
 }
