@@ -35,8 +35,8 @@ public class Tale {
     private String keywordIds;
 
 
-    @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TaleWord> taleWordList = new ArrayList<>();
+//    @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<LanguageTaleWord> languageTaleWordList = new ArrayList<>();
 
     public Tale(Member member) {
         this.member = member;

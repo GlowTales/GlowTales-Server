@@ -55,14 +55,13 @@ public class TaleService {
         if (member == null) {
             throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
         }
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new RuntimeException("해당 아이디에 맞는 멤버가 없습니다. 아이디: " + memberId));
+      
         return new HomeInfoResponseDto(member);
     }
 
 
     //#005 완료하지 않은 동화 모두 불러오기
-    public List<TaleResponseDto> getUnlearnedTaleByMemberId(String accessToken, int count) {
+    public List<TaleResponseDto> getUnlearnedTaleByMemberId(String accessToken, int count, boolean koreaVersion) {
         if (accessToken == null) {
             throw new RuntimeException("accessToken이 null입니다");
         }
@@ -73,23 +72,26 @@ public class TaleService {
 
         List<Tale> tales = taleRepository.findByMemberId(member.getId());
 
-        Stream<Tale> taleStream = tales.stream()
-                .filter(tale -> tale.getLanguageTaleList().stream()
-                        .anyMatch(languageTale -> languageTale.getLanguage().getId() == 1 && languageTale.getIsLearned().getValue() == 1))
-                .sorted(Comparator.comparing(Tale::getStudiedAt).reversed());
+        Stream<TaleResponseDto> taleResponseDtoStream = tales.stream()
+                .flatMap(tale -> tale.getLanguageTaleList().stream()
+                        .filter(languageTale -> (koreaVersion
+                                ? Objects.equals(languageTale.getLanguage().getLanguageName(), "Korean")
+                                : true) && languageTale.getIsLearned().getValue() == 1)
+                        .map(languageTale -> new TaleResponseDto(languageTale)))
+                .sorted(Comparator.comparing(TaleResponseDto::getTale_id)); // Optional: Sort if necessary
 
         if (count > 0) {
-            taleStream = taleStream.limit(count);
+            taleResponseDtoStream = taleResponseDtoStream.limit(count);
         }
 
-        return taleStream
-                .map(TaleResponseDto::new)
-                .collect(Collectors.toList());
+        return taleResponseDtoStream.collect(Collectors.toList());
+
     }
 
 
-    //#007 최근 학습한 동화 모두 불러오기
-    public List<TaleResponseDto> getStudiedTaleByMemberId(String accessToken, int count) {
+
+    //#007 최근 학습한 동화 조회
+    public List<TaleResponseDto> getStudiedTaleByMemberId(String accessToken, int count, boolean koreaVersion) {
         if (accessToken == null) {
             throw new RuntimeException("accessToken이 null입니다");
         }
@@ -99,19 +101,19 @@ public class TaleService {
         }
 
         List<Tale> tales = taleRepository.findByMemberId(member.getId());
-
-        Stream<Tale> taleStream = tales.stream()
-                .filter(tale -> tale.getLanguageTaleList().stream()
-                        .anyMatch(languageTale -> languageTale.getLanguage().getId() == 1 && languageTale.getIsLearned().getValue() == 0))
-                .sorted(Comparator.comparing(Tale::getStudiedAt).reversed());
+        Stream<TaleResponseDto> taleResponseDtoStream = tales.stream()
+                .flatMap(tale -> tale.getLanguageTaleList().stream()
+                        .filter(languageTale -> (koreaVersion
+                                ? Objects.equals(languageTale.getLanguage().getLanguageName(), "Korean")
+                                : true) && languageTale.getIsLearned().getValue() == 0)
+                        .map(languageTale -> new TaleResponseDto(languageTale)))
+                .sorted(Comparator.comparing(TaleResponseDto::getTale_id)); // Optional: Sort if necessary
 
         if (count > 0) {
-            taleStream = taleStream.limit(count);
+            taleResponseDtoStream = taleResponseDtoStream.limit(count);
         }
 
-        return taleStream
-                .map(TaleResponseDto::new)
-                .collect(Collectors.toList());
+        return taleResponseDtoStream.collect(Collectors.toList());
     }
 
     //#003 단어장 조회
@@ -126,12 +128,13 @@ public class TaleService {
 
         List<Tale> tales = taleRepository.findByMemberId(member.getId());
         Stream<WordResponseDto> wordStream = tales.stream()
-                .flatMap(tale ->
-                        tale.getTaleWordList().stream()
-                                .map(tw -> tw.getWord()) // Word 객체를 스트림으로 변환
-                                .filter(word -> word != null && word.getOriginWord() != null)
-                                .map(WordResponseDto::new)
-                );
+                .flatMap(tale -> tale.getLanguageTaleList().stream()
+                        .flatMap(languageTale ->
+                                languageTale.getLanguageTaleWordList().stream()
+                                        .map(tw -> tw.getWord()) // Word 객체를 스트림으로 변환
+                                        .filter(word -> word != null && word.getOriginWord() != null)
+                                        .map(WordResponseDto::new)
+                        ));
 
         if (count > 0) {
             wordStream = wordStream.limit(count); // count가 0보다 큰 경우에만 limit 적용
@@ -184,6 +187,11 @@ public class TaleService {
                 String.class
         );
 
+        if (responseEntity.getStatusCode().value()!= 200){
+            String errorMessage = "키워드 추출 실패. 에러 코드: " + responseEntity.getStatusCode().value() + ", body: " + responseEntity.getBody();
+            throw new RuntimeException(errorMessage);
+        }
+
 
         return filterAndTranslateResponse(responseEntity.getBody());
     }
@@ -193,6 +201,7 @@ public class TaleService {
             JsonNode rootNode = objectMapper.readTree(responseBody);
 
             List<Map<String, Object>> filteredData = new ArrayList<>();
+            Set<String> seenKeywords = new HashSet<>(); // 중복 키워드 추적용
 
             // confidence가 0.8 이상인 항목만 필터링 및 번역
             for (JsonNode item : rootNode.path("return_object").path("data")) {
@@ -200,10 +209,15 @@ public class TaleService {
                 if (confidence >= 0.8) {
                     String keyword = item.path("class").asText();
                     String translatedKeyword = translateKeyword(keyword, "KO"); // 원하는 언어로 번역
-                    filteredData.add(Map.of(
-                            "keyword", translatedKeyword,
-                            "confidence", confidence
-                    ));
+
+                    // 중복 키워드가 아닌 경우만 추가
+                    if (!seenKeywords.contains(translatedKeyword)) {
+                        seenKeywords.add(translatedKeyword);
+                        filteredData.add(Map.of(
+                                "keyword", translatedKeyword,
+                                "confidence", confidence
+                        ));
+                    }
                 }
             }
 
@@ -216,6 +230,9 @@ public class TaleService {
     }
 
     public String translateKeyword(String keyword, String targetLang) {
+        if (keyword.equals("cat")){
+            return "고양이";
+        }
         TranslationRequest request = new TranslationRequest(Collections.singletonList(keyword), targetLang);
 
 //        logger.info(request.toString());

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,7 +38,7 @@ public class Quiz {
     private List<Choice> choiceList = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Arrangement> arrangementList = new ArrayList<>();
+    private List<Sequence> sequenceList = new ArrayList<>();
 
     @Builder
     public Quiz(Integer cd, String question, YesOrNo isLearned, LanguageTale languageTale, String answer) {

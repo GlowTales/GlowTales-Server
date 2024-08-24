@@ -1,7 +1,7 @@
 package com.example.glowtales.dto.response.quiz;
 
-import com.example.glowtales.domain.Arrangement;
 import com.example.glowtales.domain.Quiz;
+import com.example.glowtales.domain.Sequence;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ public class SentenceArrangementResponseDto extends QuizResponseDto {
 
     public SentenceArrangementResponseDto(Quiz quiz) {
         super(quiz);
-        this.sequenceList = quiz.getArrangementList().stream()
+        this.sequenceList = quiz.getSequenceList().stream()
                 .map(SequenceDto::new)
                 .collect(Collectors.toList());
     }
@@ -28,7 +28,7 @@ public class SentenceArrangementResponseDto extends QuizResponseDto {
         private Integer order;
 
         @Builder
-        public SequenceDto(Arrangement arrangement) {
+        public SequenceDto(Sequence arrangement) {
             this.word = arrangement.getWord();
             this.order = arrangement.getOrders();
         }
