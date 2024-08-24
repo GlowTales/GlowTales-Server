@@ -18,6 +18,12 @@ public class LanguageTaleService {
     @Transactional
     public void updateIsLearned(LanguageTaleDto languageTaleDto) {
         LanguageTale languageTale = languageTaleRepository.findById(languageTaleDto.getLanguageTaleId()).orElseThrow(() -> new NoSuchElementException("해당 동화가 존재하지 않습니다."));
-        languageTale.updateIsLearnedAndCountAndFirstQuizCount(YesOrNo.YES, languageTale.getCount()+1, languageTaleDto.getAnswerCounts());
+
+        if (languageTale.getCount() == 0) {
+            languageTale.updateIsLearnedAndCountAndFirstQuizCount(YesOrNo.YES, languageTale.getCount()+1, languageTaleDto.getAnswerCounts());
+        } else {
+            languageTale.updateCount(languageTale.getCount()+1);
+        }
+
     }
 }

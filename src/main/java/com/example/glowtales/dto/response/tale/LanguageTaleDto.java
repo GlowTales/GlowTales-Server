@@ -9,6 +9,5 @@ import lombok.Setter;
 public class LanguageTaleDto {
     @NotNull
     private Long languageTaleId;
-    @NotNull
     private Integer answerCounts;
 }
