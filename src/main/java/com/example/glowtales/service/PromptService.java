@@ -103,7 +103,7 @@ public class PromptService {
     }
 
     public JSONObject createQuiz(String tale, String learningLevel) throws Exception {
-        String prompt = "You are an AI assistant that helps create quizzes based on fairy tales. I will provide you with a fairy tale text and specify the learning level of the students. Your task is to extract keywords and key sentences from the story, and then generate a quiz based on the provided learning level. Please follow the structure below for your response:\n" +
+        String prompt = "\"You are an AI assistant that helps create quizzes based on fairy tales. I will provide you with a fairy tale text and specify the learning level of the students. Your task is to extract keywords and key sentences from the story, and then generate a quiz based on the provided learning level. Please follow the structure below for your response:\n" +
                 "\n" +
                 "### Parameters:\n" +
                 "- **Fairy Tale Text**: " + tale + "\n" +
@@ -112,17 +112,24 @@ public class PromptService {
                 "### Instructions:\n" +
                 "1. **Extract Keywords:**\n" +
                 "   - Identify 5 important words from the provided fairy tale text.\n" +
+                "   - Adjust the complexity of the selected words according to the provided learning level:\n" +
+                "     - For beginners, choose simpler and more frequently used words.\n" +
+                "     - For intermediate learners, choose moderately complex words that are still commonly used.\n" +
+                "     - For advanced learners, choose more complex or less commonly used words.\n" +
                 "   - For each word, provide the word in the original language and its meaning in Korean.\n" +
                 "\n" +
                 "2. **Extract Key Sentences:**\n" +
                 "   - Identify 5 important sentences from the provided fairy tale text.\n" +
+                "   - Adjust the complexity of the selected sentences according to the provided learning level:\n" +
+                "     - For beginners, choose shorter and simpler sentences.\n" +
+                "     - For intermediate learners, choose moderately complex sentences with some challenging vocabulary or structures.\n" +
+                "     - For advanced learners, choose longer and more complex sentences.\n" +
                 "   - Provide each sentence in the original language along with its meaning in Korean.\n" +
                 "\n" +
                 "3. **Generate Quizzes** (consider the provided learning level):\n" +
                 "   - Create 3 multiple-choice questions using the extracted keywords. For each question, provide 4 incorrect choices (in Korean) and 1 correct choice (in Korean).\n" +
                 "   - Create 2 short-answer questions using the extracted keywords. Provide only the keyword (in the original language) for each question.\n" +
-                "   - Create 5 sentence ordering question using the extracted key sentences. Break the sentence into 3 to 7 parts and present them out of order. The student will need to rearrange them into the correct order.\n" +
-                "\n" +
+                "   - Create 5 sentence ordering questions using the extracted key sentences. Break each sentence into 3 to 7 parts and present them out of order. The student will need to rearrange them into the correct order.\n"+
                 "### Example Structure:\n" +
                 "```json\n" +
                 "{\n" +
