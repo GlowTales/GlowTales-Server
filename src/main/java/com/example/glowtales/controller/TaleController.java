@@ -2,7 +2,6 @@ package com.example.glowtales.controller;
 
 import com.example.glowtales.domain.ResultCode;
 import com.example.glowtales.dto.Result;
-import com.example.glowtales.dto.request.TaleRequest;
 import com.example.glowtales.dto.response.tale.*;
 import com.example.glowtales.service.LanguageTaleService;
 import com.example.glowtales.service.MemberService;
@@ -134,11 +133,11 @@ public class TaleController {
     @Operation(summary = "#008 동화 만들기", description = "동화를 만드는 API입니다.")
     @PostMapping("/")
     public Result createTales(
-            @RequestBody @Valid TaleRequest taleRequest,
+            @RequestBody @Valid TaleForm taleForm,
             @RequestHeader(value = "Authorization", required = false) String accessToken) {
         try {
 
-            return new Result(ResultCode.SUCCESS, taleService.createLanguageTales(taleRequest, accessToken));
+            return new Result(ResultCode.SUCCESS, taleService.createLanguageTales(taleForm, accessToken));
         } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }

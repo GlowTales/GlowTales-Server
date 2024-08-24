@@ -3,7 +3,6 @@ package com.example.glowtales.service;
 import com.example.glowtales.domain.LanguageTale;
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.domain.Tale;
-import com.example.glowtales.dto.request.TaleRequest;
 import com.example.glowtales.dto.request.TranslationRequest;
 import com.example.glowtales.dto.response.tale.*;
 import com.example.glowtales.repository.*;
@@ -56,6 +55,7 @@ public class TaleService {
         if (member == null) {
             throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
         }
+      
         return new HomeInfoResponseDto(member);
     }
 
@@ -87,6 +87,7 @@ public class TaleService {
         return taleResponseDtoStream.collect(Collectors.toList());
 
     }
+
 
 
     //#007 최근 학습한 동화 조회
@@ -308,11 +309,11 @@ public class TaleService {
 
     // 동화 만들기
     @Transactional
-    public Long createLanguageTales(TaleRequest taleRequest, String accessToken) {
+    public Long createLanguageTales(TaleForm taleForm, String accessToken) {
         // 1. accessToken -> member 반환
         Member member = memberService.findMemberByAccessToken(accessToken);
         // 2. chatgpt한테 story 받아오기
-//        List<TaleDetailResponseDto> tales = promptService.createInitialTales(taleRequest, member);
+//        List<TaleDetailResponseDto> tales = promptService.createInitialTales(taleForm, member);
         List<TaleDetailResponseDto> languageTales = promptService.test();
         // 3. tale 저장
         Tale tale = taleRepository.save(new Tale(member));
