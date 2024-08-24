@@ -3,7 +3,7 @@ package com.example.glowtales.service;
 import com.example.glowtales.domain.LanguageTale;
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.domain.Tale;
-import com.example.glowtales.dto.request.TaleRequest;
+import com.example.glowtales.dto.request.TaleForm;
 import com.example.glowtales.dto.request.TranslationRequest;
 import com.example.glowtales.dto.response.tale.*;
 import com.example.glowtales.repository.*;
@@ -186,7 +186,7 @@ public class TaleService {
                 String.class
         );
 
-        if (responseEntity.getStatusCode().value()!= 200){
+        if (responseEntity.getStatusCode().value() != 200) {
             String errorMessage = "키워드 추출 실패. 에러 코드: " + responseEntity.getStatusCode().value() + ", body: " + responseEntity.getBody();
             throw new RuntimeException(errorMessage);
         }
@@ -229,7 +229,7 @@ public class TaleService {
     }
 
     public String translateKeyword(String keyword, String targetLang) {
-        if (keyword.equals("cat")){
+        if (keyword.equals("cat")) {
             return "고양이";
         }
         TranslationRequest request = new TranslationRequest(Collections.singletonList(keyword), targetLang);
@@ -308,11 +308,11 @@ public class TaleService {
 
     // 동화 만들기
     @Transactional
-    public Long createLanguageTales(TaleRequest taleRequest, String accessToken) {
+    public Long createLanguageTales(TaleForm taleForm, String accessToken) {
         // 1. accessToken -> member 반환
         Member member = memberService.findMemberByAccessToken(accessToken);
         // 2. chatgpt한테 story 받아오기
-//        List<TaleDetailResponseDto> tales = promptService.createInitialTales(taleRequest, member);
+//        List<TaleDetailResponseDto> tales = promptService.createInitialTales(taleForm, member);
         List<TaleDetailResponseDto> languageTales = promptService.test();
         // 3. tale 저장
         Tale tale = taleRepository.save(new Tale(member));

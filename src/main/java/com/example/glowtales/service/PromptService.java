@@ -1,7 +1,7 @@
 package com.example.glowtales.service;
 
 import com.example.glowtales.domain.Member;
-import com.example.glowtales.dto.request.TaleRequest;
+import com.example.glowtales.dto.request.TaleForm;
 import com.example.glowtales.dto.response.tale.TaleDetailResponseDto;
 import com.example.glowtales.repository.LanguageRepository;
 import com.example.glowtales.repository.LanguageTaleRepository;
@@ -41,15 +41,15 @@ public class PromptService {
     @Value("${chatgpt.model}")
     private String model;
 
-    public List<TaleDetailResponseDto> createInitialTales(TaleRequest taleRequest, Member member) {
+    public List<TaleDetailResponseDto> createInitialTales(TaleForm taleForm, Member member) {
         String prompt =
                 "Please generate a fairy tale in JSON format based on the following inputs:\n" +
-                        "Atmosphere:" + taleRequest.getMood() + "\n" +
-                        "Characters:" + taleRequest.getCharacters() + "(e.g., a brave knight, a curious fox, a kind witch)\n" +
-                        "Main Plot/Theme: " + taleRequest.getContents() + "(e.g., a quest for hidden treasure, a journey to discover friendship)\n" +
+                        "Atmosphere:" + taleForm.getMood() + "\n" +
+                        "Characters:" + taleForm.getCharacters() + "(e.g., a brave knight, a curious fox, a kind witch)\n" +
+                        "Main Plot/Theme: " + taleForm.getContents() + "(e.g., a quest for hidden treasure, a journey to discover friendship)\n" +
                         "Reader's Age:" + member.getAge() + " years old\n" +
                         "Preferred Language: English, Korean, Chinese, Japanese\n" +
-                        "Keyword: " + taleRequest.getKeywords() + "\n" +
+                        "Keyword: " + taleForm.getKeywords() + "\n" +
                         """
                                 Please generate a fairy tale that adheres to the following requirements:
                                 
@@ -96,7 +96,7 @@ public class PromptService {
                 "Characters: A brave knight, a wise owl, an enchanted tree\n" +
                 "Main Plot/Theme: A quest to find a lost kingdom\n" +
                 "Reader's Age: 10 years old\n" +
-                "Preferred Language: English, Korean\n" +
+                "Preferred Language: English, Korean, Chinese, Japanese\n" +
                 "Keyword: A glowing crystal\n" +
                 """
                         Please generate a fairy tale that adheres to the following requirements:
