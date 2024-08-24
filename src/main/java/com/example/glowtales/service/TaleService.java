@@ -126,7 +126,6 @@ public class TaleService {
         }
 
         List<Tale> tales = taleRepository.findByMemberId(member.getId());
-        System.out.println("====================== tales" + tales);
         Stream<WordResponseDto> wordStream = tales.stream()
                 .flatMap(tale -> tale.getLanguageTaleList().stream()
                         .flatMap(languageTale ->
@@ -196,6 +195,7 @@ public class TaleService {
             JsonNode rootNode = objectMapper.readTree(responseBody);
 
             List<Map<String, Object>> filteredData = new ArrayList<>();
+            Set<String> seenKeywords = new HashSet<>(); // 중복 키워드 추적용
 
             // confidence가 0.8 이상인 항목만 필터링 및 번역
             for (JsonNode item : rootNode.path("return_object").path("data")) {
@@ -203,10 +203,15 @@ public class TaleService {
                 if (confidence >= 0.8) {
                     String keyword = item.path("class").asText();
                     String translatedKeyword = translateKeyword(keyword, "KO"); // 원하는 언어로 번역
-                    filteredData.add(Map.of(
-                            "keyword", translatedKeyword,
-                            "confidence", confidence
-                    ));
+
+                    // 중복 키워드가 아닌 경우만 추가
+                    if (!seenKeywords.contains(translatedKeyword)) {
+                        seenKeywords.add(translatedKeyword);
+                        filteredData.add(Map.of(
+                                "keyword", translatedKeyword,
+                                "confidence", confidence
+                        ));
+                    }
                 }
             }
 
@@ -219,6 +224,9 @@ public class TaleService {
     }
 
     public String translateKeyword(String keyword, String targetLang) {
+        if (keyword.equals("cat")){
+            return "고양이";
+        }
         TranslationRequest request = new TranslationRequest(Collections.singletonList(keyword), targetLang);
 
 //        logger.info(request.toString());
