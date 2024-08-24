@@ -186,6 +186,11 @@ public class TaleService {
                 String.class
         );
 
+        if (responseEntity.getStatusCode().value()!= 200){
+            String errorMessage = "키워드 추출 실패. 에러 코드: " + responseEntity.getStatusCode().value() + ", body: " + responseEntity.getBody();
+            throw new RuntimeException(errorMessage);
+        }
+
 
         return filterAndTranslateResponse(responseEntity.getBody());
     }

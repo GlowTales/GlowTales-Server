@@ -94,6 +94,9 @@ public class TaleController {
         try {
             String responseJson = taleService.getKeyword(file);
             KeywordResponseDto keywordResponseDto = objectMapper.readValue(responseJson, KeywordResponseDto.class);
+            if (keywordResponseDto.getResult().isEmpty()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
             return ResponseEntity.ok(keywordResponseDto);
         } catch (Exception e) {
             e.printStackTrace();
