@@ -42,14 +42,25 @@ public class PromptService {
     private String model;
 
     public List<TaleDetailResponseDto> createInitialTales(TaleForm taleForm, Member member) {
+
+        String characters = "";
+        for (String character : taleForm.getCharacters()) {
+            characters += character;
+        }
+
+        String keywords = "";
+        for (String keyword : taleForm.getKeywords()) {
+            keywords += keyword;
+        }
+
         String prompt =
                 "Please generate a fairy tale in JSON format based on the following inputs:\n" +
                         "Atmosphere:" + taleForm.getMood() + "\n" +
-                        "Characters:" + taleForm.getCharacters() + "(e.g., a brave knight, a curious fox, a kind witch)\n" +
+                        "Characters:" + characters + "(e.g., a brave knight, a curious fox, a kind witch)\n" +
                         "Main Plot/Theme: " + taleForm.getContents() + "(e.g., a quest for hidden treasure, a journey to discover friendship)\n" +
                         "Reader's Age:" + member.getAge() + " years old\n" +
                         "Preferred Language: English, Korean, Chinese, Japanese\n" +
-                        "Keyword: " + taleForm.getKeywords() + "\n" +
+                        "Keyword: " + keywords + "\n" +
                         """
                                 Please generate a fairy tale that adheres to the following requirements:
                                 
