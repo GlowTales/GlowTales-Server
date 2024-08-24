@@ -57,6 +57,10 @@ public class LanguageTale {
         this.count = count;
     }
 
+    public void updateCount(Integer count) {
+        this.count = count;
+    }
+
     public void updateIsLearnedAndCountAndFirstQuizCount(YesOrNo isLearned, Integer count, Integer firstQuizCount) {
         this.isLearned = isLearned;
         this.count = count;
