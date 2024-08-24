@@ -28,10 +28,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PromptService {
 
-    private final TaleRepository taleRepository;
-    private final LanguageTaleRepository languageTaleRepository;
-    private final LanguageRepository languageRepository;
-
     @Value("${chatgpt.api-key}")
     private String apiKey;
 
@@ -42,14 +38,32 @@ public class PromptService {
     private String model;
 
     public List<TaleDetailResponseDto> createInitialTales(TaleForm taleForm, Member member) {
+        StringBuilder characters = new StringBuilder();
+        for (String character : taleForm.getCharacters()) {
+            characters.append(character).append(", ");
+        }
+
+        if (characters.length() > 0) {
+            characters.setLength(characters.length() - 2);
+        }
+
+        StringBuilder keywords = new StringBuilder();
+        for (String keyword : taleForm.getKeywords()) {
+            characters.append(keyword).append(", ");
+        }
+
+        if (keywords.length() > 0) {
+            keywords.setLength(keywords.length() - 2);
+        }
+
         String prompt =
                 "Please generate a fairy tale in JSON format based on the following inputs:\n" +
                         "Atmosphere:" + taleForm.getMood() + "\n" +
-                        "Characters:" + taleForm.getCharacters() + "(e.g., a brave knight, a curious fox, a kind witch)\n" +
+                        "Characters:" + characters + "(e.g., a brave knight, a curious fox, a kind witch)\n" +
                         "Main Plot/Theme: " + taleForm.getContents() + "(e.g., a quest for hidden treasure, a journey to discover friendship)\n" +
                         "Reader's Age:" + member.getAge() + " years old\n" +
                         "Preferred Language: English, Korean, Chinese, Japanese\n" +
-                        "Keyword: " + taleForm.getKeywords() + "\n" +
+                        "Keyword: " + keywords + "\n" +
                         """
                                 Please generate a fairy tale that adheres to the following requirements:
                                 
