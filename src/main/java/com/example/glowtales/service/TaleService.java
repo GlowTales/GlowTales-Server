@@ -312,9 +312,19 @@ public class TaleService {
     public Long createLanguageTales(TaleForm taleForm, String accessToken) {
         // 1. accessToken -> member 반환
         Member member = memberService.findMemberByAccessToken(accessToken);
+
+        // keywords 한 -> 영 변환
+        List<String> keywords = new ArrayList<>();
+
+        for (String mark : taleForm.getKeywords()) {
+            keywords.add(wordRepository.findByOriginWordAndLanguage(wordRepository.findByMark(mark), languageRepository.findByLanguageName("English")).getMark());
+        }
+
+        taleForm.setKeywords(keywords);
+
         // 2. chatgpt한테 story 받아오기
-//        List<TaleDetailResponseDto> tales = promptService.createInitialTales(taleForm, member);
-        List<TaleDetailResponseDto> languageTales = promptService.test();
+        List<TaleDetailResponseDto> languageTales = promptService.createInitialTales(taleForm, member);
+//        List<TaleDetailResponseDto> languageTales = promptService.test();
         // 3. tale 저장
         Tale tale = taleRepository.save(new Tale(member));
         // 4. languageTale 저장
