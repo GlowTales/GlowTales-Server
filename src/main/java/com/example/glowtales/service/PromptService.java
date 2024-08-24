@@ -102,59 +102,12 @@ public class PromptService {
         return getStories(getChatResponse(prompt));
     }
 
-    public List<TaleDetailResponseDto> test() {
-        String prompt = "Please generate a fairy tale based on the following inputs:\n" +
-                "\n" +
-                "Atmosphere: Magical\n" +
-                "Characters: A brave knight, a wise owl, an enchanted tree\n" +
-                "Main Plot/Theme: A quest to find a lost kingdom\n" +
-                "Reader's Age: 10 years old\n" +
-                "Preferred Language: English, Korean, Chinese, Japanese\n" +
-                "Keyword: A glowing crystal\n" +
-                """
-                        Please generate a fairy tale that adheres to the following requirements:
-                        
-                         1. Length: The story should be at least 35 sentences and no more than 50 sentences.
-                         2. Age Appropriateness: Tailor the language, themes, and content to be suitable for the reader's age.
-                         3. Dynamic Content: The story should reflect the atmosphere, characters, main plot/theme, and keyword provided.
-                         4. Title: Generate a suitable title for the fairy tale in the specified languages.
-                         5. Formatting: Separate each sentence with a newline character "\n".
-                         6. JSON Format: The output should be in JSON format as shown below.
-                        
-                         Expected JSON Format:
-                        
-                         [
-                           {
-                             "language": "English",
-                             "title": "The Lost Kingdom of Glimmervale",
-                             "story": "Once upon a time, in a magical land, there was a brave knight named Sir Cedric..."
-                           },
-                           {
-                             "language": "Korean",
-                             "title": "잃어버린 왕국",
-                             "story": "옛날 옛적에, 마법의 땅에 용감한 기사 세드릭이 살고 있었어요..."
-                           },
-                           {
-                             "language": "Chinese",
-                             "title": "失落的王国",
-                             "story": "很久很久以前，在一个魔法的土地上，有一位勇敢的骑士名叫赛德里克..."
-                           },
-                           {
-                             "language": "Japanese",
-                             "title": "失われた王国",
-                             "story": "昔々、魔法の国にセドリックという勇敢な騎士がいました..."
-                           }
-                         ]
-                        """;
-        return getStories(getChatResponse(prompt));
-    }
-
-    public void createQuiz(String tale, String learningLevel) {
+    public JSONObject createQuiz(String tale, String learningLevel) throws Exception {
         String prompt = "You are an AI assistant that helps create quizzes based on fairy tales. I will provide you with a fairy tale text and specify the learning level of the students. Your task is to extract keywords and key sentences from the story, and then generate a quiz based on the provided learning level. Please follow the structure below for your response:\n" +
                 "\n" +
                 "### Parameters:\n" +
                 "- **Fairy Tale Text**: " + tale + "\n" +
-                "- **Learning Level**: " + learningLevel + "\n" +
+                "- **Learning Level**: " + getLearningLevel(learningLevel) + "\n" +
                 "\n" +
                 "### Instructions:\n" +
                 "1. **Extract Keywords:**\n" +
@@ -168,7 +121,7 @@ public class PromptService {
                 "3. **Generate Quizzes** (consider the provided learning level):\n" +
                 "   - Create 3 multiple-choice questions using the extracted keywords. For each question, provide 4 incorrect choices (in Korean) and 1 correct choice (in Korean).\n" +
                 "   - Create 2 short-answer questions using the extracted keywords. Provide only the keyword (in the original language) for each question.\n" +
-                "   - Create 1 sentence ordering question using the extracted key sentences. Break the sentence into 3 to 7 parts and present them out of order. The student will need to rearrange them into the correct order.\n" +
+                "   - Create 5 sentence ordering question using the extracted key sentences. Break the sentence into 3 to 7 parts and present them out of order. The student will need to rearrange them into the correct order.\n" +
                 "\n" +
                 "### Example Structure:\n" +
                 "```json\n" +
@@ -231,6 +184,23 @@ public class PromptService {
                 "        }\n" +
                 "    ]\n" +
                 "}\n";
+
+        return new JSONObject(extractContent(getChatResponse(prompt)));
+    }
+
+    private String getLearningLevel(String learningLevel) {
+        if (learningLevel.equals("1000")) {
+            return "I am just starting to learn.";
+        } else if (learningLevel.equals("2000")) {
+            return "I know a few commonly used words.";
+        } else if (learningLevel.equals("3000")) {
+            return "I can have basic conversations.";
+        } else if (learningLevel.equals("4000")) {
+            return "I can discuss a variety of topics.";
+        } else if (learningLevel.equals("5000")) {
+            return "I can discuss most topics in detail.";
+        }
+        return "";
     }
 
     public JSONObject testQuiz() throws Exception {
