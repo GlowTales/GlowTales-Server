@@ -3,9 +3,6 @@ package com.example.glowtales.service;
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.dto.response.tale.TaleDetailResponseDto;
 import com.example.glowtales.dto.response.tale.TaleForm;
-import com.example.glowtales.repository.LanguageRepository;
-import com.example.glowtales.repository.LanguageTaleRepository;
-import com.example.glowtales.repository.TaleRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +40,7 @@ public class PromptService {
             characters.append(character).append(", ");
         }
 
-        if (characters.length() > 0) {
+        if (!characters.isEmpty()) {
             characters.setLength(characters.length() - 2);
         }
 
@@ -52,52 +49,54 @@ public class PromptService {
             characters.append(keyword).append(", ");
         }
 
-        if (keywords.length() > 0) {
+        if (!keywords.isEmpty()) {
             keywords.setLength(keywords.length() - 2);
         }
 
         String prompt =
-                "Please generate a fairy tale in JSON format based on the following inputs:\n" +
-                        "Atmosphere:" + taleForm.getMood() + "\n" +
-                        "Characters:" + characters + "(e.g., a brave knight, a curious fox, a kind witch)\n" +
-                        "Main Plot/Theme: " + taleForm.getContents() + "(e.g., a quest for hidden treasure, a journey to discover friendship)\n" +
-                        "Reader's Age:" + member.getAge() + " years old\n" +
+                "\"Please generate a fairy tale in JSON format based on the following inputs:\n" +
+                        "\n" +
+                        "Atmosphere: \"" + taleForm.getMood() + "\n" +
+                        "Characters: \"" + characters + "\"(e.g., a brave knight, a curious fox, a kind witch)\n" +
+                        "Main Plot/Theme: \"" + taleForm.getContents() + "\"(e.g., a quest for hidden treasure, a journey to discover friendship)\n" +
+                        "Reader's Age: \"" + member.getAge() + "\" years old\n" +
                         "Preferred Language: English, Korean, Chinese, Japanese\n" +
-                        "Keyword: " + keywords + "\n" +
-                        """
-                                Please generate a fairy tale that adheres to the following requirements:
-                                
-                                 1. Length: The story should be at least 35 sentences and no more than 50 sentences.
-                                 2. Age Appropriateness: Tailor the language, themes, and content to be suitable for the reader's age.
-                                 3. Dynamic Content: The story should reflect the atmosphere, characters, main plot/theme, and keyword provided.
-                                 4. Title: Generate a suitable title for the fairy tale in the specified languages.
-                                 5. JSON Format: The output should be in JSON format as shown below.
-                                
-                                 Expected JSON Format:
-                                
-                                 [
-                                   {
-                                     "language": "English",
-                                     "title": "The Lost Kingdom of Glimmervale",
-                                     "story": "Once upon a time, in a magical land, there was a brave knight named Sir Cedric..."
-                                   },
-                                   {
-                                     "language": "Korean",
-                                     "title": "잃어버린 왕국",
-                                     "story": "옛날 옛적에, 마법의 땅에 용감한 기사 세드릭이 살고 있었어요..."
-                                   },
-                                   {
-                                     "language": "Chinese",
-                                     "title": "失落的王国",
-                                     "story": "很久很久以前，在一个魔法的土地上，有一位勇敢的骑士名叫赛德里克..."
-                                   },
-                                   {
-                                     "language": "Japanese",
-                                     "title": "失われた王国",
-                                     "story": "昔々、魔法の国にセドリックという勇敢な騎士がいました..."
-                                   }
-                                 ]
-                                """;
+                        "Keyword: \"" + keywords + "\n" +
+                        "Please generate a fairy tale that adheres to the following requirements:\n" +
+                        "\n" +
+                        "Length: The story should be at least 35 sentences and no more than 50 sentences.\n" +
+                        "Age Appropriateness: Tailor the language, themes, and content to be suitable for the reader's age.\n" +
+                        "Character Names: Ensure that the character names are friendly and appealing to children.\n" +
+                        "Dynamic Content: The story should reflect the atmosphere, characters, main plot/theme, and keyword provided.\n" +
+                        "Keywords Appearance: The keywords should appear as objects in the fairy tale but should not have dialogue or be personified.\n" +
+                        "Sentence Separation: Each sentence should be separated by a newline character (\\n) for clarity.\n" +
+                        "Title: Generate a suitable title for the fairy tale in the specified languages.\n" +
+                        "JSON Format: The output should be in JSON format as shown below.\n" +
+                        "Expected JSON Format:\n" +
+                        "\n" +
+                        "json\n" +
+                        "[\n" +
+                        "  {\n" +
+                        "    \"language\": \"English\",\n" +
+                        "    \"title\": \"The Lost Kingdom of Glimmervale\",\n" +
+                        "    \"story\": \"Once upon a time, in a magical land, there was a brave knight named Sir Cedric...\\nSir Cedric ventured into the forest...\\nHe discovered a hidden treasure...\\n\"\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"language\": \"Korean\",\n" +
+                        "    \"title\": \"잃어버린 왕국\",\n" +
+                        "    \"story\": \"옛날 옛적에, 마법의 땅에 용감한 기사 세드릭이 살고 있었어요...\\n세드릭은 숲으로 모험을 떠났어요...\\n그는 숨겨진 보물을 발견했어요...\\n\"\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"language\": \"Chinese\",\n" +
+                        "    \"title\": \"失落的王国\",\n" +
+                        "    \"story\": \"很久很久以前，在一个魔法的土地上，有一位勇敢的骑士名叫赛德里克...\\n赛德里克走进了森林...\\n他发现了隐藏的宝藏...\\n\"\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"language\": \"Japanese\",\n" +
+                        "    \"title\": \"失われた王国\",\n" +
+                        "    \"story\": \"昔々、魔法の国にセドリックという勇敢な騎士がいました...\\nセドリックは森に冒険に出かけました...\\n彼は隠された宝物を見つけました...\\n\"\n" +
+                        "  }\n" +
+                        "]";
 
 
         return getStories(getChatResponse(prompt));
