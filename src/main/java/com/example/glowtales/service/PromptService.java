@@ -102,53 +102,6 @@ public class PromptService {
         return getStories(getChatResponse(prompt));
     }
 
-    public List<TaleDetailResponseDto> test() {
-        String prompt = "Please generate a fairy tale based on the following inputs:\n" +
-                "\n" +
-                "Atmosphere: Magical\n" +
-                "Characters: A brave knight, a wise owl, an enchanted tree\n" +
-                "Main Plot/Theme: A quest to find a lost kingdom\n" +
-                "Reader's Age: 10 years old\n" +
-                "Preferred Language: English, Korean, Chinese, Japanese\n" +
-                "Keyword: A glowing crystal\n" +
-                """
-                        Please generate a fairy tale that adheres to the following requirements:
-                        
-                         1. Length: The story should be at least 35 sentences and no more than 50 sentences.
-                         2. Age Appropriateness: Tailor the language, themes, and content to be suitable for the reader's age.
-                         3. Dynamic Content: The story should reflect the atmosphere, characters, main plot/theme, and keyword provided.
-                         4. Title: Generate a suitable title for the fairy tale in the specified languages.
-                         5. Formatting: Separate each sentence with a newline character "\n".
-                         6. JSON Format: The output should be in JSON format as shown below.
-                        
-                         Expected JSON Format:
-                        
-                         [
-                           {
-                             "language": "English",
-                             "title": "The Lost Kingdom of Glimmervale",
-                             "story": "Once upon a time, in a magical land, there was a brave knight named Sir Cedric..."
-                           },
-                           {
-                             "language": "Korean",
-                             "title": "잃어버린 왕국",
-                             "story": "옛날 옛적에, 마법의 땅에 용감한 기사 세드릭이 살고 있었어요..."
-                           },
-                           {
-                             "language": "Chinese",
-                             "title": "失落的王国",
-                             "story": "很久很久以前，在一个魔法的土地上，有一位勇敢的骑士名叫赛德里克..."
-                           },
-                           {
-                             "language": "Japanese",
-                             "title": "失われた王国",
-                             "story": "昔々、魔法の国にセドリックという勇敢な騎士がいました..."
-                           }
-                         ]
-                        """;
-        return getStories(getChatResponse(prompt));
-    }
-
     public void createQuiz(String tale, String learningLevel) {
         String prompt = "You are an AI assistant that helps create quizzes based on fairy tales. I will provide you with a fairy tale text and specify the learning level of the students. Your task is to extract keywords and key sentences from the story, and then generate a quiz based on the provided learning level. Please follow the structure below for your response:\n" +
                 "\n" +
