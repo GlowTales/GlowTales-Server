@@ -8,8 +8,6 @@ import lombok.Setter;
 @Setter
 public class QuizForm {
     @NotNull
-    private Long taleId;
-    @NotNull
-    private Long languageId;
+    private Long languageTaleId;
     private String learningLevel;
 }

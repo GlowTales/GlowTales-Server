@@ -102,12 +102,12 @@ public class PromptService {
         return getStories(getChatResponse(prompt));
     }
 
-    public void createQuiz(String tale, String learningLevel) {
+    public JSONObject createQuiz(String tale, String learningLevel) throws Exception {
         String prompt = "You are an AI assistant that helps create quizzes based on fairy tales. I will provide you with a fairy tale text and specify the learning level of the students. Your task is to extract keywords and key sentences from the story, and then generate a quiz based on the provided learning level. Please follow the structure below for your response:\n" +
                 "\n" +
                 "### Parameters:\n" +
                 "- **Fairy Tale Text**: " + tale + "\n" +
-                "- **Learning Level**: " + learningLevel + "\n" +
+                "- **Learning Level**: " + getLearningLevel(learningLevel) + "\n" +
                 "\n" +
                 "### Instructions:\n" +
                 "1. **Extract Keywords:**\n" +
@@ -121,7 +121,7 @@ public class PromptService {
                 "3. **Generate Quizzes** (consider the provided learning level):\n" +
                 "   - Create 3 multiple-choice questions using the extracted keywords. For each question, provide 4 incorrect choices (in Korean) and 1 correct choice (in Korean).\n" +
                 "   - Create 2 short-answer questions using the extracted keywords. Provide only the keyword (in the original language) for each question.\n" +
-                "   - Create 1 sentence ordering question using the extracted key sentences. Break the sentence into 3 to 7 parts and present them out of order. The student will need to rearrange them into the correct order.\n" +
+                "   - Create 5 sentence ordering question using the extracted key sentences. Break the sentence into 3 to 7 parts and present them out of order. The student will need to rearrange them into the correct order.\n" +
                 "\n" +
                 "### Example Structure:\n" +
                 "```json\n" +
@@ -184,6 +184,23 @@ public class PromptService {
                 "        }\n" +
                 "    ]\n" +
                 "}\n";
+
+        return new JSONObject(extractContent(getChatResponse(prompt)));
+    }
+
+    private String getLearningLevel(String learningLevel) {
+        if (learningLevel.equals("1000")) {
+            return "I am just starting to learn.";
+        } else if (learningLevel.equals("2000")) {
+            return "I know a few commonly used words.";
+        } else if (learningLevel.equals("3000")) {
+            return "I can have basic conversations.";
+        } else if (learningLevel.equals("4000")) {
+            return "I can discuss a variety of topics.";
+        } else if (learningLevel.equals("5000")) {
+            return "I can discuss most topics in detail.";
+        }
+        return "";
     }
 
     public JSONObject testQuiz() throws Exception {

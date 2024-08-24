@@ -4,6 +4,7 @@ import com.example.glowtales.domain.*;
 import com.example.glowtales.dto.request.QuizForm;
 import com.example.glowtales.dto.response.quiz.*;
 import com.example.glowtales.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -73,24 +73,25 @@ public class QuizService {
 
     @Transactional
     public KeywordsAndKeySentencesDto createQuizzes(QuizForm quizForm, String accessToken) throws Exception {
+        LanguageTale languageTale = languageTaleRepository.findById(quizForm.getLanguageTaleId()).orElseThrow(() -> new EntityNotFoundException("해당 동화가 존재하지 않습니다."));
+
         // 이미 선택한 학습언어에 대한 학습 수준에 대한 정보가 있을 경우
         if (quizForm.getLearningLevel() == null) {
             Member member = memberService.findMemberByAccessToken(accessToken);
             LearningLanguage learningLanguage = learningLanguageRepository.findByMemberAndLanguage(
                     member,
-                    languageRepository.findById(quizForm.getLanguageId())
-                            .orElseThrow(() -> new NoSuchElementException("해당 정보가 존재하지 않습니다.")));
+                    languageTale.getLanguage());
+
             quizForm.setLearningLevel(learningLanguage.getLearningLevel());
         }
 
         // 핵심단어 & 핵심문장 생성
-//        promptService.createQuiz();
-        JSONObject jsonObject = promptService.testQuiz();
+
+        JSONObject jsonObject = promptService.createQuiz(languageTale.getStory(), quizForm.getLearningLevel());
+//        JSONObject jsonObject = promptService.testQuiz();
         System.out.println("jsonObject: " + jsonObject);
 
-        Language language = languageRepository.findById(quizForm.getLanguageId()).orElseThrow(() -> new NoSuchElementException("해당 언어가 존재하지 않습니다."));
-        Tale tale = taleRepository.findById(quizForm.getTaleId()).orElseThrow(() -> new NoSuchElementException("해당 동화가 존재하지 않습니다."));
-        LanguageTale languageTale = languageTaleRepository.findByLanguageAndTale(language, tale);
+        Language language = languageTale.getLanguage();
 
         List<KeyResponseDto> keywordDtos = new ArrayList<>();
 
