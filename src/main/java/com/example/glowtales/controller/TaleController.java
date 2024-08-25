@@ -40,7 +40,7 @@ public class TaleController {
     private static final Logger logger = LoggerFactory.getLogger(TaleController.class);
 
     @Operation(summary = "#001 전체 동화 상태창 조회", description = "홈 화면에 나타나는 상태를 불러오는 API입니다.")
-    @GetMapping("/")
+    @GetMapping("/status")
     public Result<HomeInfoResponseDto> getHomeInfoByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken) {
         try {
             HomeInfoResponseDto infos = taleService.getHomeInfoByMemberId(accessToken);
