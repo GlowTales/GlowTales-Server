@@ -4,8 +4,6 @@ import com.example.glowtales.domain.ResultCode;
 import com.example.glowtales.dto.Result;
 import com.example.glowtales.dto.response.tale.*;
 import com.example.glowtales.service.LanguageTaleService;
-import com.example.glowtales.service.MemberService;
-import com.example.glowtales.service.PromptService;
 import com.example.glowtales.service.TaleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,12 +34,10 @@ public class TaleController {
 
 
     private final TaleService taleService;
-    private final MemberService memberService;
     private final ObjectMapper objectMapper;
     private final LanguageTaleService languageTaleService;
 
     private static final Logger logger = LoggerFactory.getLogger(TaleController.class);
-    private final PromptService promptService;
 
     @Operation(summary = "#001 전체 동화 상태창 조회", description = "홈 화면에 나타나는 상태를 불러오는 API입니다.")
     @GetMapping("/")
@@ -159,6 +155,15 @@ public class TaleController {
         try {
             languageTaleService.updateIsLearned(languageTaleDto);
             return new Result(ResultCode.SUCCESS, null);
+        } catch (Exception e) {
+            return new Result(ResultCode.FAIL, e.getMessage(), "400");
+        }
+    }
+
+    @GetMapping("/learned")
+    public Result getAllQuizInfo(@RequestParam Long taleId) {
+        try {
+            return new Result(ResultCode.SUCCESS, languageTaleService.getAllQuizInfo(taleId));
         } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
