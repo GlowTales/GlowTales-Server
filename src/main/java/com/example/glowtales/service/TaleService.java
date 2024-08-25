@@ -339,7 +339,7 @@ public class TaleService {
 
         return PostTaleDto.builder()
                 .taleId(tale.getId())
-                .createAt(tale.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
+                .createdAt(tale.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
                 .languageTales(languageDtos)
                 .build();
     }

@@ -1,6 +1,5 @@
 package com.example.glowtales.dto.response.tale;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +12,5 @@ import java.util.List;
 public class PostTaleDto {
     private Long taleId;
     private List<LanguageTaleAndLanguageDto> languageTales;
-    private String createAt;
+    private String createdAt;
 }
