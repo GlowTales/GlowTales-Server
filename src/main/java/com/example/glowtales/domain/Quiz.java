@@ -26,7 +26,7 @@ public class Quiz {
     private YesOrNo isLearned;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tale_id")
+    @JoinColumn(name = "language_tale_id")
     private LanguageTale languageTale;
 
 //    @OneToOne(mappedBy = "quiz")
