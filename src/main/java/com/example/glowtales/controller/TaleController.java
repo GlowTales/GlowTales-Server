@@ -161,9 +161,11 @@ public class TaleController {
     }
 
     @GetMapping("/learned")
-    public Result getAllQuizInfo(@RequestParam Long taleId) {
+    public Result getAllQuizInfo(
+            @RequestParam Long taleId,
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
         try {
-            return new Result(ResultCode.SUCCESS, languageTaleService.getAllQuizInfo(taleId));
+            return new Result(ResultCode.SUCCESS, languageTaleService.getAllQuizInfo(accessToken, taleId));
         } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
