@@ -38,6 +38,11 @@ public class LanguageTaleService {
         }
 
         languageTale.getTale().updateStudiedAt(); // 학습시간 업데이트
+
+        for (Quiz quiz : quizRepository.findByLanguageTale(languageTale)) {
+            quiz.updateIsLearned(YesOrNo.YES); // 퀴즈 학습여부 업데이트
+        }
+
         languageTale.updateIsLearnedAndCountAndFirstQuizCount(YesOrNo.YES, languageTale.getCount()+1, languageTaleDto.getAnswerCounts());
     }
 
