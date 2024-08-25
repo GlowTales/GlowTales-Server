@@ -56,12 +56,15 @@ public class MemberController {
         return new Result(ResultCode.SUCCESS, memberService.getAccessToken());
     }
 
+
     @Operation(summary = "#013 사용자 학습 언어와 수준 조회", description = "사용자가 학습 중인 언어와 수준을 조회하는 API입니다.")
     @GetMapping("/learningLevel")
-    public Result<List<LearningLanguageResponseDto>> getLanguageLearningDataByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken) {
+    public Result<LearningLanguageResponseDto> getLearningLevel(
+            @RequestHeader(value = "Authorization") String accessToken,
+            @RequestParam Long languageId
+    ) {
         try {
-            List<LearningLanguageResponseDto> infos = memberService.getLanguageLearningDataByMemberId(accessToken);
-            return new Result(ResultCode.SUCCESS, infos);
+            return new Result(ResultCode.SUCCESS, memberService.getLearningLevel(accessToken, languageId));
         } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
