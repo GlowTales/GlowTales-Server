@@ -27,6 +27,7 @@ public class LanguageTaleService {
     @Transactional
     public void updateIsLearned(LanguageTaleDto languageTaleDto) {
         LanguageTale languageTale = languageTaleRepository.findById(languageTaleDto.getLanguageTaleId()).orElseThrow(() -> new NoSuchElementException("해당 동화가 존재하지 않습니다."));
+        languageTale.getTale().updateStudiedAt(); // 학습시간 업데이트
         languageTale.updateIsLearnedAndCountAndFirstQuizCount(YesOrNo.YES, languageTale.getCount()+1, languageTaleDto.getAnswerCounts());
     }
 
