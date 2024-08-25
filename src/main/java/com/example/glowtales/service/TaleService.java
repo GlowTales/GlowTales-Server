@@ -1,5 +1,6 @@
 package com.example.glowtales.service;
 
+import com.example.glowtales.domain.Language;
 import com.example.glowtales.domain.LanguageTale;
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.domain.Tale;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -309,7 +311,7 @@ public class TaleService {
 
     // 동화 만들기
     @Transactional
-    public Long createLanguageTales(TaleForm taleForm, String accessToken) {
+    public PostTaleDto createLanguageTales(TaleForm taleForm, String accessToken) {
         // 1. accessToken -> member 반환
         Member member = memberService.findMemberByAccessToken(accessToken);
 
@@ -328,12 +330,18 @@ public class TaleService {
         // 3. tale 저장
         Tale tale = taleRepository.save(new Tale(member));
         // 4. languageTale 저장
+        List<LanguageTaleAndLanguageDto> languageDtos = new ArrayList<>();
         for (TaleDetailResponseDto languageTaleDto : languageTales) {
-            System.out.println("시작: ");
-            languageTaleRepository.save(TaleDetailResponseDto.to(languageTaleDto, tale, languageRepository.findByLanguageName(languageTaleDto.getLanguageName())));
-            System.out.println("들어감: " + languageTaleDto.getLanguageName());
+            Language language = languageRepository.findByLanguageName(languageTaleDto.getLanguageName());
+            LanguageTale languageTale = languageTaleRepository.save(TaleDetailResponseDto.to(languageTaleDto, tale, language));
+            languageDtos.add(LanguageTaleAndLanguageDto.builder().languageTaleId(languageTale.getId()).languageId(language.getId()).build());
         }
-        return tale.getId();
+
+        return PostTaleDto.builder()
+                .taleId(tale.getId())
+                .createAt(tale.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
+                .languageTales(languageDtos)
+                .build();
     }
 
 }

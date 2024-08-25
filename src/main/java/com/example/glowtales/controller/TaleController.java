@@ -143,7 +143,7 @@ public class TaleController {
 
     @Operation(summary = "#008 동화 만들기", description = "동화를 만드는 API입니다.")
     @PostMapping("/")
-    public Result createTales(
+    public Result<PostTaleDto> createTales(
             @RequestBody @Valid TaleForm taleForm,
             @RequestHeader(value = "Authorization", required = false) String accessToken) {
         try {
