@@ -53,7 +53,7 @@ public class MemberService {
     }
 
     public String getAccessToken() {
-        return jwtTokenProvider.accessTokenGenerate("1", new Date((new Date()).getTime() + 1000 * 60 * 60));
+        return jwtTokenProvider.accessTokenGenerate("2", new Date((new Date()).getTime() + 1000 * 60 * 60));
     }
 
 //    public List<LearningLanguageResponseDto> getLanguageLearningDataByMemberId(String accessToken) {

@@ -10,6 +10,7 @@ import com.example.glowtales.repository.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.Gson;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -344,4 +345,30 @@ public class TaleService {
                 .build();
     }
 
+    public CreatedRecentlyTaleDto getCreatedRecentlyTales(String accessToken, Integer count) {
+        Member member = memberService.findMemberByAccessToken(accessToken);
+
+        if (member == null) {
+            throw new EntityNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
+        List<TaleDto> tales = new ArrayList<>();
+
+        for (Tale tale : taleRepository.findByMemberOrderByCreatedAtDesc(member)) {
+            tales.add(TaleDto.builder()
+                    .title(languageTaleRepository.findByLanguageAndTale(languageRepository.findByLanguageName("Korean"), tale).getTitle())
+                    .createdAt(tale.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
+                    .taleId(tale.getId())
+                    .build());
+
+            if (count != null) {
+                if (tales.size() == count) {
+                    break;
+                }
+            }
+        }
+
+        CreatedRecentlyTaleDto createdRecentlyTaleDto = new CreatedRecentlyTaleDto(tales);
+        return createdRecentlyTaleDto;
+    }
 }
