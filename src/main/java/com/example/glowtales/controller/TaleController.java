@@ -136,6 +136,19 @@ public class TaleController {
         }
     }
 
+    @Operation(summary = "최근 생성된 동화 조회")
+    @GetMapping("/recently")
+    public Result getCreatedRecentlyTales(
+            @RequestHeader(value = "Authorization", required = true) String accessToken,
+            @RequestParam(required = false) Integer count
+    ) {
+        try {
+            return new Result(ResultCode.SUCCESS, taleService.getCreatedRecentlyTales(accessToken, count));
+        } catch (Exception e) {
+            return new Result(ResultCode.FAIL, e.getMessage(), "400");
+        }
+    }
+
 
     @Operation(summary = "#008 동화 만들기", description = "동화를 만드는 API입니다.")
     @PostMapping("/")
