@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,7 +62,7 @@ public class MemberController {
         try {
             List<LearningLanguageResponseDto> infos = memberService.getLanguageLearningDataByMemberId(accessToken);
             return new Result(ResultCode.SUCCESS, infos);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
     }

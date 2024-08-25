@@ -15,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,10 +46,10 @@ public class TaleController {
     @Operation(summary = "#001 전체 동화 상태창 조회", description = "홈 화면에 나타나는 상태를 불러오는 API입니다.")
     @GetMapping("/")
     public Result<HomeInfoResponseDto> getHomeInfoByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken) {
-        try{
+        try {
             HomeInfoResponseDto infos = taleService.getHomeInfoByMemberId(accessToken);
             return new Result(ResultCode.SUCCESS, infos);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
 
@@ -60,13 +58,13 @@ public class TaleController {
     @Operation(summary = "#005 완료하지 않은 동화 조회", description = "학습을 완료하지 않은 동화를 최신순으로 불러오는 API입니다. count는 limit을 의미하며, koreanVersion 은 홈/학습하기 화면에서 쓰이는 조건입니다.(홈/학습하기에는 한국어 버전의 동화만 보이며 미리보기로 화면에 보이는 동화의 수가 제한되어있음)")
     @GetMapping("/unlearned")
     public Result<List<TaleResponseDto>> getUnlearnedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam(name = "count", required = false) Integer count, @RequestParam Boolean koreanVersion) {
-        try{
+        try {
             if (count == null) {
                 count = -1;//기본값 설정. 제한 없이 모든 동화를 불러옴
             }
             List<TaleResponseDto> posts = taleService.getUnlearnedTaleByMemberId(accessToken, count, koreanVersion);
             return new Result(ResultCode.SUCCESS, posts);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
 
@@ -76,13 +74,13 @@ public class TaleController {
     @Operation(summary = "#007 최근 학습한 동화 전체 조회", description = "최근 학습한 동화를 최신순으로 불러오는 API입니다.count는 limit을 의미하며, koreanVersion 은 홈/학습하기 화면에서 쓰이는 조건입니다.(홈/학습하기에는 한국어 버전의 동화만 보이며 미리보기로 화면에 보이는 동화의 수가 제한되어있음)")
     @GetMapping("/studied")
     public Result<List<TaleResponseDto>> getStudiedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam(name = "count", required = false) Integer count, @RequestParam Boolean koreanVersion) {
-        try{
+        try {
             if (count == null) {
                 count = -1;//기본값 설정. 제한 없이 모든 동화를 불러옴
             }
             List<TaleResponseDto> posts = taleService.getStudiedTaleByMemberId(accessToken, count, koreanVersion);
             return new Result(ResultCode.SUCCESS, posts);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
 
@@ -98,32 +96,34 @@ public class TaleController {
             }
             List<WordResponseDto> words = taleService.getWordByMemberId(accessToken, count);
             return new Result(ResultCode.SUCCESS, words);
-        }catch(Exception e){
-                return new Result(ResultCode.FAIL, e.getMessage(), "400");
-            }
+        } catch (Exception e) {
+            return new Result(ResultCode.FAIL, e.getMessage(), "400");
+        }
     }
 
     @Operation(summary = "#010 사진에서 키워드 추출하기", description = "업로드한 사진에서 키워드를 추출하는 API입니다.")
     @PostMapping("/keyword")
     public Result<KeywordResponseDto> handleFileUpload(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam("file") MultipartFile file) {
-        try{
+        try {
             String responseJson = taleService.getKeyword(file);
             KeywordResponseDto keyword = objectMapper.readValue(responseJson, KeywordResponseDto.class);
-            if (keyword.getResult().isEmpty()){
-                return new Result(ResultCode.FAIL, "키워드 추출에 실패하였습니다. 다른 사진을 넣어주세요", "400");}
+            if (keyword.getResult().isEmpty()) {
+                return new Result(ResultCode.FAIL, "키워드 추출에 실패하였습니다. 다른 사진을 넣어주세요", "400");
+            }
             return new Result(ResultCode.SUCCESS, keyword);
         } catch (Exception e) {
-            return new Result(ResultCode.FAIL, e.getMessage(), "400");}
+            return new Result(ResultCode.FAIL, e.getMessage(), "400");
+        }
 
     }
 
     @Operation(summary = "#014 단일 동화 조회", description = "languageTaleId를 통해 단일 동화를 조회하는 API입니다. 홈화면,학습하기 화면에서 단일 동화를 조회할 때 사용합니다.")
     @GetMapping("/detail")
     public Result<LanguageTaleDetailResponseDto> getTaleBylanguageTaleId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam Long languageTaleId) {
-        try{
+        try {
             LanguageTaleDetailResponseDto tale = taleService.getTaleBylanguageTaleId(accessToken, languageTaleId);
             return new Result(ResultCode.SUCCESS, tale);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
     }
@@ -131,11 +131,11 @@ public class TaleController {
     @Operation(summary = "#015 단일 동화 다국어로 조회", description = "TaleId와 languageId를 통해 단일 동화를 조회하는 API입니다. 동화 생성 후 언어를 바꿀때 사용합니다.1 = 영어 , 2 = 한국어 , 3 = 일본어 , 4 = 중국어")
     @GetMapping("/detail/lan")
     public Result<LanguageTaleDetailResponseDto> getTaleBylanguageTaleIdLanguageId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam Long taleId, @RequestParam Long languageId) {
-        try{
+        try {
             LanguageTaleDetailResponseDto tale = taleService.getTaleBylanguageTaleIdLanguageId(accessToken, taleId, languageId);
             return new Result(ResultCode.SUCCESS, tale);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
     }

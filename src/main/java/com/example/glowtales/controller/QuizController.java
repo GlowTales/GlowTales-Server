@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -29,7 +28,7 @@ public class QuizController {
         try {
             TotalQuizResponseDto quiz = quizService.getTotalQuizByLanguageTaleId(languageTaleId, accessToken);
             return new Result(ResultCode.SUCCESS, quiz);
-        }catch(Exception e){
+        } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
     }
