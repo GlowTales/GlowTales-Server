@@ -182,15 +182,21 @@ public class QuizService {
                 );
 
                 for (int j = 0; j < choices.length(); j++) {
+                    // 중복 선지 제거
+                    if (choices.getString(j).equals(answer)) {
+                        continue;
+                    }
+
                     // 선지 저장
                     choiceRepository.save(
                             Choice.builder()
                                     .quiz(quiz)
-                                    .sunji(choices.getString(i))
+                                    .sunji(choices.getString(j))
                                     .isCorrect(YesOrNo.NO)
                                     .build()
                     );
                 }
+
                 System.out.println("객관식 저장 완료");
                 // 2. 주관식 퀴즈 & 정답 생성
             } else if (quizObject.has("short")) {
@@ -205,6 +211,7 @@ public class QuizService {
                                 .isLearned(YesOrNo.NO)
                                 .question(word + "의 뜻은 무엇인가요?")
                                 .languageTale(languageTale)
+                                .answer(answer)
                                 .build()
                 );
 
