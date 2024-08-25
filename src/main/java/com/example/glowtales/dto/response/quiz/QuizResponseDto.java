@@ -1,9 +1,18 @@
 package com.example.glowtales.dto.response.quiz;
 
 import com.example.glowtales.domain.Quiz;
+import com.example.glowtales.domain.ResultCode;
+import com.example.glowtales.dto.Result;
+import com.example.glowtales.dto.response.tale.WordResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Getter
 @Setter

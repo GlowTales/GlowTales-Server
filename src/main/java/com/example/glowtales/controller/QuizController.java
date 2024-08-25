@@ -25,9 +25,13 @@ public class QuizController {
 
     @Operation(summary = "#011 동화의 퀴즈와 정답 조회", description = "languageTaleId를 통해 퀴즈와 정답을 조회하는 API입니다.")
     @GetMapping("/{languageTaleId}")
-    public ResponseEntity<TotalQuizResponseDto> getTotalQuizByLanguageTaleId(@PathVariable Long languageTaleId, @RequestHeader(value = "Authorization", required = true) String accessToken) {
-        TotalQuizResponseDto quiz = quizService.getTotalQuizByLanguageTaleId(languageTaleId, accessToken);
-        return ResponseEntity.ok(quiz);
+    public Result<TotalQuizResponseDto> getTotalQuizByLanguageTaleId(@PathVariable Long languageTaleId, @RequestHeader(value = "Authorization", required = true) String accessToken) {
+        try {
+            TotalQuizResponseDto quiz = quizService.getTotalQuizByLanguageTaleId(languageTaleId, accessToken);
+            return new Result(ResultCode.SUCCESS, quiz);
+        }catch(Exception e){
+            return new Result(ResultCode.FAIL, e.getMessage(), "400");
+        }
     }
 
 
