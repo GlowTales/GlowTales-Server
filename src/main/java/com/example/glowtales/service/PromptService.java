@@ -111,13 +111,14 @@ public class PromptService {
                 "\n" +
                 "### Instructions:\n" +
                 "1. **Extract Keywords:**\n" +
-                "   - Identify 5 important words from the provided fairy tale text.\n" +
-                "   - Adjust the complexity of the selected words according to the provided learning level:\n" +
-                "     - For beginners, choose simpler and more frequently used words.\n" +
-                "     - For intermediate learners, choose moderately complex words that are still commonly used.\n" +
-                "     - For advanced learners, choose more complex or less commonly used words.\n" +
-                "   - For each word, provide the word in the original language and its meaning in Korean.\n" +
-                "\n" +
+                "\"- Identify 5 important words from the provided fairy tale text.\",\n" +
+                "\"- Make sure the words are in the original language of the fairy tale.\",\n" +
+                "\"- Adjust the complexity of the selected words according to the provided learning level:\",\n" +
+                "\"  - For beginners, choose simpler and more frequently used words.\",\n" +
+                "\"  - For intermediate learners, choose moderately complex words that are still commonly used.\",\n" +
+                "\"  - For advanced learners, choose more complex or less commonly used words.\",\n" +
+                "\"- For each word, provide the word in the original language and its meaning in Korean.\""+
+        "\n" +
                 "2. **Extract Key Sentences:**\n" +
                 "   - Identify 5 important sentences from the provided fairy tale text.\n" +
                 "   - Adjust the complexity of the selected sentences according to the provided learning level:\n" +
@@ -127,14 +128,13 @@ public class PromptService {
                 "   - Provide each sentence in the original language along with its meaning in Korean.\n" +
                 "\n" +
                 "3. **Generate Quizzes** (consider the provided learning level):\n" +
-                "   - Create 3 multiple-choice questions using the extracted keywords. For each question, provide 4 incorrect choices (in Korean) and 1 correct choice (in Korean).\n" +
-                "   - Create 2 short-answer questions using the extracted keywords. Provide only the keyword (in the original language) for each question.\n" +
-                "   - Create 5 sentence ordering questions using the extracted key sentences. Break each sentence into 3 to 7 parts and present them out of order. The student will need to rearrange them into the correct order.\n"+
+                " \"- Create 3 multiple-choice questions using the extracted keywords. For each question, provide 4 incorrect choices (in Korean) and 1 correct choice (in Korean).\",\n" +
+                " \"- Create 2 short-answer questions using the extracted keywords. Provide only the keyword (in originial language) and answer in korean for each question.\",\n" +
+                " \"- Create 5 sentence ordering questions using the extracted key sentences.\",\n" +
+                " \"- For each sentence ordering question, provide question(the sentense meaning) in Korean and the segments in the original language of the fairy tale.\""+
                 "### Example Structure:\n" +
                 "```json\n" +
                 "{\n" +
-                "    \"fairyTale\": \"[Insert the provided fairy tale text here]\",\n" +
-                "    \"learningLevel\": \"[Insert the provided learning level here]\",\n" +
                 "    \"keywords\": [\n" +
                 "        [\"tree\", \"나무\"],\n" +
                 "        [\"love\", \"사랑\"],\n" +
@@ -188,6 +188,30 @@ public class PromptService {
                 "                \"quiz\": \"마법의 숲에 도착할 때까지 강을 따라가\",\n" +
                 "                \"sequences\": [\"Follow the river\", \"until\", \"you reach\", \"the Enchanted Forest\"]\n" +
                 "            }\n" +
+                "        }, \n" +
+                "        {\n" +
+                "            \"order\": {\n" +
+                "                \"quiz\": \"빛나는 크리스탈을 찾는 걸 도와줄 수 있어?\",\n" +
+                "                \"sequences\": [\"Can you help me\", \"find the glowing crystal?\"]\n" +
+                "            }\n" +
+                "        }, \n" +
+                "        {\n" +
+                "            \"order\": {\n" +
+                "                \"quiz\": \"나무는 숲의 비밀을 속삭였다.\",\n" +
+                "                \"sequences\": [\"The tree whispered\", \"secrets of the forest.\"]\n" +
+                "            }\n" +
+                "        }, \n" +
+                "        {\n" +
+                "            \"order\": {\n" +
+                "                \"quiz\": \"왕자와 공주의 사랑은 마법 같았다.\",\n" +
+                "                \"sequences\": [\"The love between\", \"the prince and the princess\", \"was magical.\"]\n" +
+                "            }\n" +
+                "        }, \n" +
+                "        {\n" +
+                "            \"order\": {\n" +
+                "                \"quiz\": \"그들은 고대 나무 아래 숨겨진 크리스탈을 발견했다.\",\n" +
+                "                \"sequences\": [\"They found the crystal\", \"hidden under\", \"the ancient tree.\"]\n" +
+                "            }\n" +
                 "        }\n" +
                 "    ]\n" +
                 "}\n";
@@ -221,14 +245,14 @@ public class PromptService {
                 ### Instructions:
                 1. **Extract Keywords:**
                    - Identify 5 important words from the provided fairy tale text.
-                   - For each word, provide the word in the original language and its meaning in Korean.
+                   - For each word, provide the word in the original language  and its meaning in Korean.
                 
                 2. **Extract Key Sentences:**
                    - Identify 5 important sentences from the provided fairy tale text.
                    - Provide each sentence in the original language along with its meaning in Korean.
                 
                 3. **Generate Quizzes** (consider the provided learning level):
-                   - Create 3 multiple-choice questions using the extracted keywords. For each question, provide 4 incorrect choices (in Korean) and 1 correct choice (in Korean).
+                   - Create 3 multiple-choice questions using the extracted keywords. For each question, provide 4 incorrect choices (in Korean) and 1 correct choice (in Korean). Please make sure there are no overlapping incorrect choices.
                    - Create 2 short-answer questions using the extracted keywords. Provide only the keyword (in the original language) for each question.
                    - Create 1 sentence ordering question using the extracted key sentences. Break the sentence into 3 to 7 parts and present them out of order. The student will need to rearrange them into the correct order.
                 
