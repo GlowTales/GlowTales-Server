@@ -48,4 +48,8 @@ public class Quiz {
         this.languageTale = languageTale;
         this.answer = answer;
     }
+
+    public void updateIsLearned(YesOrNo isLearned) {
+        this.isLearned = isLearned;
+    }
 }
