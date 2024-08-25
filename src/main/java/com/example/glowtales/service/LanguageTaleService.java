@@ -25,8 +25,19 @@ public class LanguageTaleService {
     private final QuizRepository quizRepository;
 
     @Transactional
-    public void updateIsLearned(LanguageTaleDto languageTaleDto) {
+    public void updateIsLearned(String accessToken, LanguageTaleDto languageTaleDto) {
+        Member member = memberService.findMemberByAccessToken(accessToken);
+        if (member == null) {
+            throw new EntityNotFoundException("해당 회원이 존재하지 않습니다.");
+        }
+
         LanguageTale languageTale = languageTaleRepository.findById(languageTaleDto.getLanguageTaleId()).orElseThrow(() -> new NoSuchElementException("해당 동화가 존재하지 않습니다."));
+
+        if (languageTale.getTale().getMember() != member) {
+            throw new IllegalArgumentException("해당 회원이 생성한 동화가 아닙니다.");
+        }
+
+        languageTale.getTale().updateStudiedAt(); // 학습시간 업데이트
         languageTale.updateIsLearnedAndCountAndFirstQuizCount(YesOrNo.YES, languageTale.getCount()+1, languageTaleDto.getAnswerCounts());
     }
 

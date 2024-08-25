@@ -43,4 +43,8 @@ public class Tale {
     public Tale(Member member) {
         this.member = member;
     }
+
+    public void updateStudiedAt() {
+        this.studiedAt = LocalDateTime.now();
+    }
 }
