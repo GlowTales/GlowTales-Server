@@ -58,7 +58,7 @@ public class TaleService {
         if (member == null) {
             throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
         }
-      
+
         return new HomeInfoResponseDto(member);
     }
 
@@ -90,7 +90,6 @@ public class TaleService {
         return taleResponseDtoStream.collect(Collectors.toList());
 
     }
-
 
 
     //#007 최근 학습한 동화 조회
@@ -129,22 +128,26 @@ public class TaleService {
             throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
         }
 
-        List<Tale> tales = taleRepository.findByMemberId(member.getId());
+        List<Tale> tales = taleRepository.findByMemberId(member.getId()).stream()
+                .sorted(Comparator.comparing(Tale::getCreatedAt).reversed())
+                .collect(Collectors.toList());
+
         Stream<WordResponseDto> wordStream = tales.stream()
                 .flatMap(tale -> tale.getLanguageTaleList().stream()
                         .flatMap(languageTale ->
                                 languageTale.getLanguageTaleWordList().stream()
-                                        .map(tw -> tw.getWord()) // Word 객체를 스트림으로 변환
+                                        .map(tw -> tw.getWord())
                                         .filter(word -> word != null && word.getOriginWord() != null)
                                         .map(WordResponseDto::new)
                         ));
 
         if (count > 0) {
-            wordStream = wordStream.limit(count); // count가 0보다 큰 경우에만 limit 적용
+            wordStream = wordStream.limit(count);
         }
 
-        return wordStream.collect(Collectors.toList()); // 리스트로 수집
+        return wordStream.collect(Collectors.toList());
     }
+
 
     //#010 사진에서 키워드 추출하기
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -190,7 +193,7 @@ public class TaleService {
                 String.class
         );
 
-        if (responseEntity.getStatusCode().value()!= 200){
+        if (responseEntity.getStatusCode().value() != 200) {
             String errorMessage = "키워드 추출 실패. 에러 코드: " + responseEntity.getStatusCode().value() + ", body: " + responseEntity.getBody();
             throw new RuntimeException(errorMessage);
         }
@@ -233,7 +236,7 @@ public class TaleService {
     }
 
     public String translateKeyword(String keyword, String targetLang) {
-        if (keyword.equals("cat")){
+        if (keyword.equals("cat")) {
             return "고양이";
         }
         TranslationRequest request = new TranslationRequest(Collections.singletonList(keyword), targetLang);
