@@ -50,9 +50,14 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/token")
-    public Result getToken() {
-        return new Result(ResultCode.SUCCESS, memberService.getAccessToken());
+    @GetMapping("/token/hy")
+    public Result getTokenForHayeong() {
+        return new Result(ResultCode.SUCCESS, memberService.getAccessTokenForHayeong());
+    }
+
+    @GetMapping("/token/es")
+    public Result getTokenForEunsu() {
+        return new Result(ResultCode.SUCCESS, memberService.getAccessTokenForEunsu());
     }
 
 

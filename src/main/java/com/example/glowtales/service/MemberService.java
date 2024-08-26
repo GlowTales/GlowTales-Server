@@ -52,8 +52,12 @@ public class MemberService {
        );
     }
 
-    public String getAccessToken() {
+    public String getAccessTokenForHayeong() {
         return jwtTokenProvider.accessTokenGenerate("2", new Date((new Date()).getTime() + 1000 * 60 * 60));
+    }
+
+    public String getAccessTokenForEunsu() {
+        return jwtTokenProvider.accessTokenGenerate("3", new Date((new Date()).getTime() + 1000 * 60 * 60));
     }
 
 //    public List<LearningLanguageResponseDto> getLanguageLearningDataByMemberId(String accessToken) {
