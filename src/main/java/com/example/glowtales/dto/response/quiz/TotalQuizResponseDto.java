@@ -1,6 +1,5 @@
 package com.example.glowtales.dto.response.quiz;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +12,7 @@ public class TotalQuizResponseDto {
     private List<MultipleChoiceResponseDto> multipleChoices = new ArrayList<>();
     private List<EssayQuestionResponseDto> essayQuestions = new ArrayList<>();
     private List<SentenceArrangementResponseDto> sentenceArrangements = new ArrayList<>();
+    private KeyWordsAndSentencesResponseDto KeyWordsAndSentences;
 
     public void addMultipleChoice(MultipleChoiceResponseDto dto) {
         this.multipleChoices.add(dto);
@@ -24,5 +24,9 @@ public class TotalQuizResponseDto {
 
     public void addSentenceArrangement(SentenceArrangementResponseDto dto) {
         this.sentenceArrangements.add(dto);
+    }
+
+    public void addKeyWordsAndSentencesResponseDto(KeyWordsAndSentencesResponseDto dto) {
+        this.KeyWordsAndSentences = dto;
     }
 }
