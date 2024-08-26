@@ -47,6 +47,8 @@ public class MemberController {
             return new Result(ResultCode.SUCCESS, null);
         } catch (EntityNotFoundException | NoSuchElementException e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
+        } catch (Exception e) {
+            return new Result(ResultCode.FAIL, e.getMessage(), "400");
         }
     }
 
