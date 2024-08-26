@@ -1,6 +1,7 @@
 package com.example.glowtales.service;
 
 import com.example.glowtales.config.jwt.JwtTokenProvider;
+import com.example.glowtales.domain.Language;
 import com.example.glowtales.domain.LearningLanguage;
 import com.example.glowtales.domain.Member;
 import com.example.glowtales.domain.YesOrNo;
@@ -42,10 +43,17 @@ public class MemberService {
         // member 추가 정보 저장
         member.updateAge(memberForm.getAge());
 
+        Language language = languageRepository.findById(memberForm.getLanguageId()).orElseThrow(() -> new NoSuchElementException("일치하는 언어가 존재하지 않습니다."));
+
+        // 이미 학습언어에 대한 정보가 존재한다면
+        if (learningLanguageRepository.findByMemberAndLanguage(member, language) != null) {
+            throw new IllegalArgumentException("이미 해당 언어에 대한 수준 정보가 존재합니다.");
+        }
+
         // learningLanguage 저장
        learningLanguageRepository.save(
                LearningLanguage.builder()
-                .language(languageRepository.findById(memberForm.getLanguageId()).orElseThrow(() -> new NoSuchElementException("일치하는 언어가 존재하지 않습니다.")))
+                .language(language)
                 .member(member)
                 .learningLevel(memberForm.getLearningLevel())
                 .build()
