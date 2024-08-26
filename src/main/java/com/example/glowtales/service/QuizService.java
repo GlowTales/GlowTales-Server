@@ -105,6 +105,10 @@ public class QuizService {
     public KeywordsAndKeySentencesDto createQuizzes(QuizForm quizForm, String accessToken) throws Exception {
         LanguageTale languageTale = languageTaleRepository.findById(quizForm.getLanguageTaleId()).orElseThrow(() -> new EntityNotFoundException("해당 동화가 존재하지 않습니다."));
 
+        if (!quizRepository.findByLanguageTale(languageTale).isEmpty()) {
+            throw new IllegalArgumentException("이미 해당 언어로 만들어진 퀴즈가 존재합니다.");
+        }
+
         // 이미 선택한 학습언어에 대한 학습 수준에 대한 정보가 있을 경우
         if (quizForm.getLearningLevel() == null) {
             Member member = memberService.findMemberByAccessToken(accessToken);
@@ -116,7 +120,6 @@ public class QuizService {
         }
 
         // 핵심단어 & 핵심문장 생성
-
         JSONObject jsonObject = promptService.createQuiz(languageTale.getStory(), quizForm.getLearningLevel());
 //        JSONObject jsonObject = promptService.testQuiz();
         System.out.println("jsonObject: " + jsonObject);
