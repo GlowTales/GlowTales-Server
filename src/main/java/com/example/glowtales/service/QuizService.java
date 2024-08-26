@@ -79,6 +79,7 @@ public class QuizService {
 
         keyWordsAndSentencesDto.setWords(wordDtos);
         keyWordsAndSentencesDto.setSentences(sentenceDtos);
+        keyWordsAndSentencesDto.setLanguageId(languageTale.getLanguage().getId());
         totalQuizResponseDto.addKeyWordsAndSentencesResponseDto(keyWordsAndSentencesDto);
 
 
