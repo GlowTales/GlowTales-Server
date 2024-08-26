@@ -335,6 +335,11 @@ public class TaleService {
         Tale tale = taleRepository.save(new Tale(member));
         // 4. languageTale 저장
         List<LanguageTaleAndLanguageDto> languageDtos = new ArrayList<>();
+
+        if (languageTales.size() != 4) {
+            throw new EntityNotFoundException("동화 생성에 실패하였습니다. 다시 시도해주세요.");
+        }
+
         for (TaleDetailResponseDto languageTaleDto : languageTales) {
             Language language = languageRepository.findByLanguageName(languageTaleDto.getLanguageName());
             LanguageTale languageTale = languageTaleRepository.save(TaleDetailResponseDto.to(languageTaleDto, tale, language));

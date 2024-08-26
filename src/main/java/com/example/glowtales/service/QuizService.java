@@ -109,14 +109,15 @@ public class QuizService {
             throw new IllegalArgumentException("이미 해당 언어로 만들어진 퀴즈가 존재합니다.");
         }
 
-        // 이미 선택한 학습언어에 대한 학습 수준에 대한 정보가 있을 경우
-        if (quizForm.getLearningLevel() == null) {
-            Member member = memberService.findMemberByAccessToken(accessToken);
-            LearningLanguage learningLanguage = learningLanguageRepository.findByMemberAndLanguage(
-                    member,
-                    languageTale.getLanguage());
+        Member member = memberService.findMemberByAccessToken(accessToken);
 
-            quizForm.setLearningLevel(learningLanguage.getLearningLevel());
+        // 받아온 학습 언어에 대해 저장된 데이터가 없다면
+        if (learningLanguageRepository.findByMemberAndLanguage(member, languageTale.getLanguage()) == null) {
+            learningLanguageRepository.save(LearningLanguage.builder()
+                    .learningLevel(quizForm.getLearningLevel())
+                    .language(languageTale.getLanguage())
+                    .member(member)
+                    .build());
         }
 
         // 핵심단어 & 핵심문장 생성
@@ -134,6 +135,7 @@ public class QuizService {
             JSONArray keywordPair = keywords.getJSONArray(i);
             String mark = keywordPair.getString(0);
             String meaning = keywordPair.getString(1);
+
             Word originWord = wordRepository.findByMark(meaning);
 
             // 한국어가 먼저 있는지 확인 -> 없으면 한국어 word 먼저 저장
@@ -146,6 +148,7 @@ public class QuizService {
 
             // 키워드가 이미 있는지도 확인 -> 키워드가 미리 저장된 것이 없을 경우 저장
             Word byMarkAndOriginWord = wordRepository.findByMarkAndOriginWord(mark, originWord);
+
 
             if (byMarkAndOriginWord == null) {
 
