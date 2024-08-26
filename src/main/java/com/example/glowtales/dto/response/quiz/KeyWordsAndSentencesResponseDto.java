@@ -11,6 +11,7 @@ public class KeyWordsAndSentencesResponseDto {
 
     private List<WordDto> words;
     private List<SentenceDto> sentences;
+    private Long languageId;
 
     @Getter
     @Setter
