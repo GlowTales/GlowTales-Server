@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +53,34 @@ public class QuizService {
         List<Quiz> quizList = quizRepository.findByLanguageTale(languageTale);
 
         TotalQuizResponseDto totalQuizResponseDto = new TotalQuizResponseDto();
+
+        KeyWordsAndSentencesResponseDto keyWordsAndSentencesDto = new KeyWordsAndSentencesResponseDto();
+
+        List<Sentence> sentences = sentenceRepository.findByLanguageTale(languageTale);
+        List<KeyWordsAndSentencesResponseDto.SentenceDto> sentenceDtos = sentences.stream()
+                .map(sentence -> {
+                    KeyWordsAndSentencesResponseDto.SentenceDto sentenceDto = new KeyWordsAndSentencesResponseDto.SentenceDto();
+                    sentenceDto.setSentence(sentence.getSentence());
+                    sentenceDto.setMean(sentence.getTranslation());
+                    return sentenceDto;
+                })
+                .collect(Collectors.toList());
+
+        List<LanguageTaleWord> languageTaleWords = languageTaleWordRepository.findByLanguageTale(languageTale);
+        List<KeyWordsAndSentencesResponseDto.WordDto> wordDtos = languageTaleWords.stream()
+                .map(languageTaleWord -> {
+                    Word originWord = languageTaleWord.getWord().getOriginWord();
+                    KeyWordsAndSentencesResponseDto.WordDto wordDto = new KeyWordsAndSentencesResponseDto.WordDto();
+                    wordDto.setWord(languageTaleWord.getWord().getMark());
+                    wordDto.setMean(originWord != null ? originWord.getMark() : null);
+                    return wordDto;
+                })
+                .collect(Collectors.toList());
+
+        keyWordsAndSentencesDto.setWords(wordDtos);
+        keyWordsAndSentencesDto.setSentences(sentenceDtos);
+        totalQuizResponseDto.addKeyWordsAndSentencesResponseDto(keyWordsAndSentencesDto);
+
 
         for (Quiz quiz : quizList) {
             switch (quiz.getCd()) {
