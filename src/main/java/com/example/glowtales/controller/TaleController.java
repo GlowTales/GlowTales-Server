@@ -163,17 +163,6 @@ public class TaleController {
         }
     }
 
-    @PutMapping("/")
-    public Result updateLanguageTale(
-            @RequestHeader(value = "Authorization") String accessToken,
-            @RequestBody @Valid LanguageTaleDto languageTaleDto) {
-        try {
-            languageTaleService.updateIsLearned(accessToken, languageTaleDto);
-            return new Result(ResultCode.SUCCESS, null);
-        } catch (Exception e) {
-            return new Result(ResultCode.FAIL, e.getMessage(), "400");
-        }
-    }
 
     @GetMapping("/learned")
     public Result getAllQuizInfo(
