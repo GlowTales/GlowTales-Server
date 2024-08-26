@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) // 폼 로그인 안함
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/members/oauth/**", "/swagger-ui/**", "/api/v1/members/token", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/v1/members/oauth/**", "/swagger-ui/**", "/api/v1/members/token/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().hasRole("USER")
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
