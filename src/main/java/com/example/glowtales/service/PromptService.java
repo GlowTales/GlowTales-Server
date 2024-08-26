@@ -128,7 +128,7 @@ public class PromptService {
                 "   - Provide each sentence in the original language along with its meaning in Korean.\n" +
                 "\n" +
                 "3. **Generate Quizzes** (consider the provided learning level):\n" +
-                " \"- Create 3 multiple-choice questions using the extracted keywords. For each question, provide 4 incorrect choices (in Korean) and 1 correct choice (in Korean).\",\n" +
+                " \"- Create 3 multiple-choice questions using the extracted keywords. For each question, provide 4 incorrect choices (in Korean) and 1 correct choice (in Korean). If the original language is in Chinese, there are cases where the choice translation is not good in Korean, but it must be given in Korean. \",\n" +
                 " \"- Create 2 short-answer questions using the extracted keywords. Provide only the keyword (in original language) and answer in korean for each question.\",\n" +
                 " \"- Create 5 sentence ordering questions using the extracted key sentences.\",\n" +
                 " \"- For each sentence ordering question, provide question(the sentense meaning) in Korean and the segments in the original language of the fairy tale.\""+
