@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -18,12 +19,13 @@ public class LanguageTaleDetailResponseDto {
     private String title;
     private String language;
     private String story;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     @Builder
     public LanguageTaleDetailResponseDto(Tale tale, Long languageId) {
         this.taleId = tale.getId();
-        this.createdAt = tale.getCreatedAt();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        this.createdAt = tale.getCreatedAt().format(formatter);
         Optional<LanguageTale> firstLanguageTale = tale.getLanguageTaleList().stream()
                 .filter(languageTale -> Objects.equals(languageTale.getLanguage().getId(), languageId))
                 .findFirst();
