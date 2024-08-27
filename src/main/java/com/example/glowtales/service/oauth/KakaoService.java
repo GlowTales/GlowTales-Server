@@ -53,7 +53,7 @@ public class KakaoService {
 //        } else {
 //            return "https://glowtales.netlify.app/kakao";
 //        }
-        return "http://localhost:5173/kakao";
+        return "https://glowtales.netlify.app/kakao";
     }
 
 
