@@ -69,12 +69,12 @@ public class TaleController {
 
     @Operation(summary = "#007 최근 학습한 동화 전체 조회", description = "최근 학습한 동화를 최신순으로 불러오는 API입니다.count는 limit을 의미하며, koreanVersion 은 홈/학습하기 화면에서 쓰이는 조건입니다.(홈/학습하기에는 한국어 버전의 동화만 보이며 미리보기로 화면에 보이는 동화의 수가 제한되어있음)")
     @GetMapping("/studied")
-    public Result<List<TaleResponseDto>> getStudiedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam(name = "count", required = false) Integer count, @RequestParam Boolean koreanVersion) {
+    public Result<List<TaleWithKoreanTitleResponseDto>> getStudiedTalesByMemberId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam(name = "count", required = false) Integer count, @RequestParam Boolean koreanVersion) {
         try {
             if (count == null) {
                 count = -1;//기본값 설정. 제한 없이 모든 동화를 불러옴
             }
-            List<TaleResponseDto> posts = taleService.getStudiedTaleByMemberId(accessToken, count, koreanVersion);
+            List<TaleWithKoreanTitleResponseDto> posts = taleService.getStudiedTaleByMemberId(accessToken, count, koreanVersion);
             return new Result(ResultCode.SUCCESS, posts);
         } catch (Exception e) {
             return new Result(ResultCode.FAIL, e.getMessage(), "400");
