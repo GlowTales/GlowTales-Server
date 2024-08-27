@@ -1,7 +1,6 @@
 # GlowTales-Server
 애자일 팀의 글로우테일 서비스 BE 레포입니다
-
-![IMG_3425.JPG](..%2F..%2F..%2F..%2F..%2F..%2FDownloads%2FIMG_3425.JPG)
+![IMG_3425](https://github.com/user-attachments/assets/9b02d61a-5614-4524-bc49-d64376831ef7)
 
 <br>
 
@@ -85,7 +84,8 @@
 <hr></hr>
 
 ## ERD
-![GlowTales.png](..%2F..%2F..%2F..%2F..%2F..%2FDownloads%2FGlowTales.png)
+![GlowTales](https://github.com/user-attachments/assets/fc49176b-be38-4c19-89d2-bb508b979e2a)
+
 
 <hr></hr>
 
