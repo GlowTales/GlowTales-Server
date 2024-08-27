@@ -32,8 +32,6 @@ public class LanguageTale {
 
     private String title;
 
-    private Integer fistQuizCount;
-
     @Convert(converter = YesOrNoConverter.class)
     private YesOrNo isLearned;
 
