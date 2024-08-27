@@ -25,7 +25,7 @@ public class TaleWithKoreanTitleResponseDto {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         this.createdAt = tale.getCreatedAt().format(formatter);
         this.languageTale = new LanguageTaleTitleResponseDto(languageTale);
-        this.firstQuizCount=languageTale.getFistQuizCount();
+        this.firstQuizCount=languageTale.getFirstQuizCount();
         this.languageId=languageTale.getLanguage().getId();
         this.koreanTitle=koreanTitle;
 
