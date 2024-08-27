@@ -76,12 +76,15 @@ public class TaleService {
         List<Tale> tales = taleRepository.findByMemberId(member.getId());
 
         Stream<TaleResponseDto> taleResponseDtoStream = tales.stream()
+                .filter(tale -> koreaVersion
+                        ? tale.getLanguageTaleList().stream().allMatch(languageTale -> languageTale.getIsLearned().getValue() == 1)
+                        : true)
                 .flatMap(tale -> tale.getLanguageTaleList().stream()
                         .filter(languageTale -> (koreaVersion
                                 ? Objects.equals(languageTale.getLanguage().getLanguageName(), "Korean")
                                 : true) && languageTale.getIsLearned().getValue() == 1)
-                        .map(languageTale -> new TaleResponseDto(languageTale)))
-                .sorted(Comparator.comparing(TaleResponseDto::getTale_id)); // Optional: Sort if necessary
+                        .map(TaleResponseDto::new))
+                .sorted(Comparator.comparing(TaleResponseDto::getTale_id));
 
         if (count > 0) {
             taleResponseDtoStream = taleResponseDtoStream.limit(count);
