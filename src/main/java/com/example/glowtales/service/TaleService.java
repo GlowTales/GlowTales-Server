@@ -76,12 +76,15 @@ public class TaleService {
         List<Tale> tales = taleRepository.findByMemberId(member.getId());
 
         Stream<TaleResponseDto> taleResponseDtoStream = tales.stream()
+                .filter(tale -> koreaVersion
+                        ? tale.getLanguageTaleList().stream().allMatch(languageTale -> languageTale.getIsLearned().getValue() == 1)
+                        : true)
                 .flatMap(tale -> tale.getLanguageTaleList().stream()
                         .filter(languageTale -> (koreaVersion
                                 ? Objects.equals(languageTale.getLanguage().getLanguageName(), "Korean")
                                 : true) && languageTale.getIsLearned().getValue() == 1)
-                        .map(languageTale -> new TaleResponseDto(languageTale)))
-                .sorted(Comparator.comparing(TaleResponseDto::getTale_id)); // Optional: Sort if necessary
+                        .map(TaleResponseDto::new))
+                .sorted(Comparator.comparing(TaleResponseDto::getTale_id));
 
         if (count > 0) {
             taleResponseDtoStream = taleResponseDtoStream.limit(count);
@@ -93,7 +96,7 @@ public class TaleService {
 
 
     //#007 최근 학습한 동화 조회
-    public List<TaleResponseDto> getStudiedTaleByMemberId(String accessToken, int count, boolean koreaVersion) {
+    public List<TaleWithKoreanTitleResponseDto> getStudiedTaleByMemberId(String accessToken, int count, boolean koreaVersion) {
         if (accessToken == null) {
             throw new RuntimeException("accessToken이 null입니다");
         }
@@ -103,13 +106,23 @@ public class TaleService {
         }
 
         List<Tale> tales = taleRepository.findByMemberId(member.getId());
-        Stream<TaleResponseDto> taleResponseDtoStream = tales.stream()
+        Stream<TaleWithKoreanTitleResponseDto> taleResponseDtoStream = tales.stream()
                 .flatMap(tale -> tale.getLanguageTaleList().stream()
                         .filter(languageTale -> (koreaVersion
                                 ? Objects.equals(languageTale.getLanguage().getLanguageName(), "Korean")
                                 : true) && languageTale.getIsLearned().getValue() == 0)
-                        .map(languageTale -> new TaleResponseDto(languageTale)))
-                .sorted(Comparator.comparing(TaleResponseDto::getTale_id)); // Optional: Sort if necessary
+                        .map(languageTale -> {
+                            // koreanTitle을 찾기 위해 languageId가 2인 객체 검색
+                            String koreanTitle = tale.getLanguageTaleList().stream()
+                                    .filter(lt -> lt.getLanguage().getId() == 2)
+                                    .map(LanguageTale::getTitle)
+                                    .findFirst()
+                                    .orElse(null);
+                            // TaleWithKoreanTitleResponseDto 생성
+                            return new TaleWithKoreanTitleResponseDto(languageTale, koreanTitle);
+                        }))
+                .sorted(Comparator.comparing(TaleWithKoreanTitleResponseDto::getTale_id)); // Optional: Sort if necessary
+
 
         if (count > 0) {
             taleResponseDtoStream = taleResponseDtoStream.limit(count);
