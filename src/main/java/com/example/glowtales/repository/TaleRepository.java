@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TaleRepository extends JpaRepository<Tale, Long> {
-    List<Tale> findByMemberId(Long memberId);
     List<Tale> findByMemberOrderByCreatedAtDesc(Member member);
+    List<Tale> findByMember(Member member);
 }

@@ -42,13 +42,6 @@ public class TaleService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaleService.class);
 
-//    @Autowired
-//    public TaleService(TaleRepository taleRepository, MemberRepository memberRepository,WordRepository wordRepository) {
-//        this.taleRepository = taleRepository;
-//        this.memberRepository=memberRepository;
-//        this.wordRepository=wordRepository;
-//    }
-
     //#001 전체 동화 상태창 불러오기
     public HomeInfoResponseDto getHomeInfoByMemberId(String accessToken) {
         if (accessToken == null) {
@@ -73,7 +66,7 @@ public class TaleService {
             throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
         }
 
-        List<Tale> tales = taleRepository.findByMemberId(member.getId());
+        List<Tale> tales = taleRepository.findByMemberOrderByCreatedAtDesc(member);
 
         Stream<TaleResponseDto> taleResponseDtoStream = tales.stream()
                 .filter(tale -> koreaVersion
@@ -83,8 +76,7 @@ public class TaleService {
                         .filter(languageTale -> (koreaVersion
                                 ? Objects.equals(languageTale.getLanguage().getLanguageName(), "Korean")
                                 : true) && languageTale.getIsLearned().getValue() == 1)
-                        .map(TaleResponseDto::new))
-                .sorted(Comparator.comparing(TaleResponseDto::getTale_id));
+                        .map(TaleResponseDto::new));
 
         if (count > 0) {
             taleResponseDtoStream = taleResponseDtoStream.limit(count);
@@ -105,7 +97,7 @@ public class TaleService {
             throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
         }
 
-        List<Tale> tales = taleRepository.findByMemberId(member.getId());
+        List<Tale> tales = taleRepository.findByMemberOrderByCreatedAtDesc(member);
         Stream<TaleWithKoreanTitleResponseDto> taleResponseDtoStream = tales.stream()
                 .flatMap(tale -> tale.getLanguageTaleList().stream()
                         .filter(languageTale -> (koreaVersion
@@ -120,8 +112,7 @@ public class TaleService {
                                     .orElse(null);
                             // TaleWithKoreanTitleResponseDto 생성
                             return new TaleWithKoreanTitleResponseDto(languageTale, koreanTitle);
-                        }))
-                .sorted(Comparator.comparing(TaleWithKoreanTitleResponseDto::getTale_id)); // Optional: Sort if necessary
+                        }));
 
 
         if (count > 0) {
@@ -141,7 +132,7 @@ public class TaleService {
             throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
         }
 
-        List<Tale> tales = taleRepository.findByMemberId(member.getId()).stream()
+        List<Tale> tales = taleRepository.findByMember(member).stream()
                 .sorted(Comparator.comparing(Tale::getCreatedAt).reversed())
                 .collect(Collectors.toList());
 
