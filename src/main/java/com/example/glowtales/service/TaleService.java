@@ -147,12 +147,13 @@ public class TaleService {
 
         Stream<WordResponseDto> wordStream = tales.stream()
                 .flatMap(tale -> tale.getLanguageTaleList().stream()
-                        .flatMap(languageTale ->
-                                languageTale.getLanguageTaleWordList().stream()
-                                        .map(tw -> tw.getWord())
-                                        .filter(word -> word != null && word.getOriginWord() != null)
-                                        .map(WordResponseDto::new)
-                        ));
+                        .flatMap(languageTale -> languageTale.getLanguageTaleWordList().stream()
+                                .map(tw -> tw.getWord())
+                                .filter(word -> word != null && word.getOriginWord() != null)
+                        )
+                )
+                .distinct()
+                .map(WordResponseDto::new);
 
         if (count > 0) {
             wordStream = wordStream.limit(count);
