@@ -26,13 +26,6 @@ import java.util.List;
 @Tag(name = "Tale API", description = "API for managing tales")
 public class TaleController {
 
-
-//#011 동화의 퀴즈와 정답 불러오기
-//#013 사용자 학습 언어와 수준 조회 GET
-//#014 단일 동화 다국어로 조회 GET
-//result 사용해서 응답 형식 통일하기
-
-
     private final TaleService taleService;
     private final ObjectMapper objectMapper;
     private final LanguageTaleService languageTaleService;
