@@ -14,20 +14,15 @@ import java.util.stream.Stream;
 public class HomeInfoResponseDto {
 
     private int createdTaleCount;
-    private Long studiedTaleCount;
+    private int studiedTaleCount;
     private int studyCount;
     private List<String> learningLanguageList;
 
     @Builder
-    public HomeInfoResponseDto(Member member) {
+    public HomeInfoResponseDto(Member member, int unstudiedTaleCount) {
         this.createdTaleCount = (member.getTaleList() != null) ? member.getTaleList().size() : 0;
 
-        this.studiedTaleCount = (member.getTaleList() != null)
-                ? member.getTaleList().stream()
-                .flatMap(tale -> tale.getLanguageTaleList() != null ? tale.getLanguageTaleList().stream() : Stream.empty())
-                .filter(languageTale -> languageTale.getIsLearned() != null && languageTale.getIsLearned().getValue() == 1)
-                .count()
-                : 0;
+        this.studiedTaleCount=this.createdTaleCount-unstudiedTaleCount;
 
         this.studyCount = (member.getTaleList() != null)
                 ? member.getTaleList().stream()

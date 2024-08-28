@@ -51,8 +51,9 @@ public class TaleService {
         if (member == null) {
             throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
         }
+        int unstudiedTaleCount=getUnlearnedTaleByMemberId(accessToken,-1,true).size();;
 
-        return new HomeInfoResponseDto(member);
+        return new HomeInfoResponseDto(member, unstudiedTaleCount);
     }
 
 
