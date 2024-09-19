@@ -6,6 +6,7 @@ import com.example.glowtales.domain.Member;
 import com.example.glowtales.domain.Tale;
 import com.example.glowtales.dto.request.TranslationRequest;
 import com.example.glowtales.dto.response.tale.*;
+import com.example.glowtales.exception.*;
 import com.example.glowtales.repository.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,7 +52,8 @@ public class TaleService {
         if (member == null) {
             throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
         }
-        int unstudiedTaleCount=getUnlearnedTaleByMemberId(accessToken,-1,true).size();;
+        int unstudiedTaleCount = getUnlearnedTaleByMemberId(accessToken, -1, true).size();
+        ;
 
         return new HomeInfoResponseDto(member, unstudiedTaleCount);
     }
@@ -291,30 +293,40 @@ public class TaleService {
 
     //#015 단일 동화 다국어로 조회
     public LanguageTaleDetailResponseDto getTaleBylanguageTaleIdLanguageId(String accessToken, Long taleId, Long languageId) {
-        if (accessToken == null) {
-            throw new RuntimeException("accessToken이 null입니다");
+
+        List<Long> validLanguageIds = Arrays.asList(1L, 2L, 3L, 4L);
+
+        if (!validLanguageIds.contains(languageId)) {
+            throw new LanguageNotFoundException("입력하신 언어 ID는 존재하지 않습니다.");
         }
+
+        if (accessToken == null) {
+            throw new AccessTokenNullException();
+        }
+        System.out.println("11111111111");
+
         Member member = memberService.findMemberByAccessToken(accessToken);
+        System.out.println("22222222");
         if (member == null) {
-            throw new RuntimeException("해당 아이디에 맞는 멤버가 없습니다.");
+            throw new MemberNotFoundException();
         }
 
         if (taleId == null) {
-            throw new RuntimeException("TaleId가 null입니다");
+            throw new TaleIdNullException();
         }
         if (languageId == null) {
-            throw new RuntimeException("languageId가 null입니다");
+            throw new LanguageIdNullException();
         }
 
         Tale tale = taleRepository.findById(taleId)
-                .orElseThrow(() -> new NoSuchElementException("해당 아이디인 tale이 없습니다. 아이디: " + taleId));
+                .orElseThrow(() -> new TaleNotFoundException(taleId));
         LanguageTale foundLanguageTale = tale.getLanguageTaleList().stream()
                 .filter(lt -> lt.getLanguage().getId() == languageId)
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("해당 언어로 생성된 languageTale 없습니다. tale 아이디: " + taleId + " 언어 아이디:" + languageId));
-
+                .orElseThrow(() -> new LanguageTaleNotFoundException(taleId, languageId));
         if (foundLanguageTale.getTale().getMember() != member) {
-            throw new RuntimeException("본인의 동화에만 접근할 수 있습니다.");
+            System.out.println("333333333");
+            throw new AccessDeniedException();
         }
         return new LanguageTaleDetailResponseDto(foundLanguageTale.getTale(), languageId);
     }

@@ -33,14 +33,6 @@ public class Tale {
     @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LanguageTale> languageTaleList = new ArrayList<>();
 
-    //todo 단어장, 키워드 자료형 논의
-    private String wordIds;
-    private String keywordIds;
-
-
-//    @OneToMany(mappedBy = "tale", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<LanguageTaleWord> languageTaleWordList = new ArrayList<>();
-
     public Tale(Member member) {
         this.member = member;
     }

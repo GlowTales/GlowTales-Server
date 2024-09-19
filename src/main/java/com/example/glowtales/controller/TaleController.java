@@ -7,6 +7,10 @@ import com.example.glowtales.service.LanguageTaleService;
 import com.example.glowtales.service.TaleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -118,15 +122,17 @@ public class TaleController {
     }
 
     @Operation(summary = "#015 단일 동화 다국어로 조회", description = "TaleId와 languageId를 통해 단일 동화를 조회하는 API입니다. 동화 생성 후 언어를 바꿀때 사용합니다.1 = 영어 , 2 = 한국어 , 3 = 일본어 , 4 = 중국어")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공적으로 동화 조회"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "403", description = "권한이 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "404", description = "언어 또는 동화가 존재하지 않음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))
+    })
     @GetMapping("/detail/lan")
     public Result<LanguageTaleDetailResponseDto> getTaleBylanguageTaleIdLanguageId(@RequestHeader(value = "Authorization", required = true) String accessToken, @RequestParam Long taleId, @RequestParam Long languageId) {
-        try {
-            LanguageTaleDetailResponseDto tale = taleService.getTaleBylanguageTaleIdLanguageId(accessToken, taleId, languageId);
-            return new Result(ResultCode.SUCCESS, tale);
-
-        } catch (Exception e) {
-            return new Result(ResultCode.FAIL, e.getMessage(), "400");
-        }
+        LanguageTaleDetailResponseDto tale = taleService.getTaleBylanguageTaleIdLanguageId(accessToken, taleId, languageId);
+        return new Result(ResultCode.SUCCESS, tale);
     }
 
     @Operation(summary = "최근 생성된 동화 조회")
